@@ -5,7 +5,7 @@ AStar::AStar()
 {
 }
 
-std::vector<Point> AStar::findPath(const Grid& grid, const Point& start, const Point& goal)
+std::vector<Cell> AStar::findPath(const Grid& grid, const Cell& start, const Cell& goal)
 {
     
 }

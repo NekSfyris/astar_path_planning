@@ -1,6 +1,6 @@
 #include <SDL.h>
 
-#include "A_Star.h"
+#include "A_star.h"
 #include "Grid.h"
 #include "Cell.h"
 
@@ -50,17 +50,17 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // Set specific cells as blocked (example)
-        grid.setCellBlocked(2, 3);
-        grid.setCellBlocked(4, 5);
-
 
         // Call the A* path planner
         if (true) {
             // Define your grid, start point, and goal point
-            Grid grid = Grid((numRows, numColumns));
-            Cell start = Cell(5, 4);
-            Cell goal = Cell(65, 70);
+            Grid grid(numRows, numColumns);
+            Cell start(5, 4);
+            Cell goal(65, 70);
+
+            // Set specific cells as blocked (example)
+            grid.setCellBlocked(2, 3);
+            grid.setCellBlocked(4, 5);
 
             // Call the path planner to find the path
             std::vector<Cell> path = a_star.findPath(grid, start, goal);

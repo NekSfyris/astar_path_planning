@@ -31,26 +31,5 @@ cd bin
 
 
 
-## Setup
-
-### Python3 Virtual Environment
-
-Install what you need with:
-- sudo apt-get install python3-pip
-- sudo pip3 install virtualenv 
-
-Go in the project folder you are interested in creating the python environment:
--cd ~/Desktop/auto_trading
-
-Create virtualenv using Python3:
-- virtualenv -p python3 venv
-
-Active your virtual environment:    
-- source venv/bin/activate
-    
-To deactivate:
-- deactivate
-
-
 
 

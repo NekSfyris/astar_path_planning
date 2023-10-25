@@ -3,6 +3,7 @@
 
 class Cell {
 public:
+    Cell();
     Cell(int x, int y);
     int getX() const;
     int getY() const;
