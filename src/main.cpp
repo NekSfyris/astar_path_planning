@@ -1,8 +1,19 @@
 #include <SDL.h>
+#include <SDL_ttf.h>
+
+#include <string>
 
 #include "A_star.h"
 #include "Grid.h"
 #include "Cell.h"
+
+
+enum State 
+{
+    CELL_SELECTION,
+    PATH_PLANNING
+};
+
 
 int main(int argc, char* argv[]) {
 
@@ -29,47 +40,170 @@ int main(int argc, char* argv[]) {
 
 
 
-    // Define grid parameters
+    // grid parameters
     int numRows = 80;
     int numColumns = 80;
 
-    // Calculate cell size to fill the window
+    // cell size to fill the window
     int cellSize = 800 / numColumns;
 
-    // Create an instance of the AStar class
+    bool init = false; // false = we haven't initialized yet, yes = we have
+    int start_row = 5;
+    int start_col = 4;
+    int goal_row = 65;
+    int goal_col = 70;
+    int curr_row = start_row, curr_col = start_col;
+
+
+
+    // ------ INITIALIZE PLANNER OBJECTS -------------------------------
+    // Define your grid, start point, and goal point
+    Grid grid(numRows, numColumns);
+    Cell start(start_row, start_col);
+    Cell goal(goal_row, goal_col);
+
+    // instance of the AStar class
     AStar a_star;
 
+    // // Set specific cells as blocked (example)
+    // for(int i=10; i<20; i++)
+    // {
+    //     for(int j=5; j<10; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
+    // for(int i=15; i<22; i++)
+    // {
+    //     for(int j=35; j<55; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
+    // for(int i=7; i<20; i++)
+    // {
+    //     for(int j=60; j<70; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
+    // for(int i=25; i<35; i++)
+    // {
+    //     for(int j=15; j<25; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
 
-    // Main event loop
+    // for(int i=25; i<35; i++)
+    // {
+    //     for(int j=5; j<10; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
+    // for(int i=30; i<45; i++)
+    // {
+    //     for(int j=35; j<45; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
+    // for(int i=55; i<65; i++)
+    // {
+    //     for(int j=35; j<45; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
+    // grid.setCellBlocked(2, 3);
+    // grid.setCellBlocked(4, 5);
+
+    // // Call the path planner to find the path
+    std::vector<Cell> path = a_star.findPath(grid, start, goal);
+    // ------------------------------------------------------------
+
+
+
+    //current state
+    State currentState = CELL_SELECTION;
+
+
+    //param initialization
     bool quit = false;
-    while (!quit) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
+    int startCellX = -1;
+    int startCellY = -1;
+    int endCellX = -1;
+    int endCellY = -1;
+    bool selecting = false;
+    SDL_Event event;
+
+    //main event loop
+    while (!quit) 
+    {
+        // while (SDL_PollEvent(&event)) {
+        while (SDL_PollEvent(&event) != 0) 
+        {
+            if(event.type == SDL_QUIT) 
+            {
                 quit = true;
+            }
+
+            if(currentState == CELL_SELECTION)
+            {
+                if(event.type == SDL_MOUSEBUTTONDOWN) 
+                {
+                    //FOR SINGLE CELL
+                    // Handle mouse click events
+                    // int x = event.button.x / cellSize;
+                    // int y = event.button.y / cellSize;
+                    // Toggle the status of the clicked cell
+                    // grid.cells[x][y] = !grid.cells[x][y];
+
+                    startCellX = event.button.x / cellSize;
+                    startCellY = event.button.y / cellSize;
+                    selecting = true;
+                } 
+                else if(event.type == SDL_MOUSEBUTTONUP) 
+                {
+                    endCellX = event.button.x / cellSize;
+                    endCellY = event.button.y / cellSize;
+                    selecting = false;
+                } 
+                else if(event.type == SDL_MOUSEMOTION && selecting) 
+                {
+                    // Continuously update the ending cell's coordinates
+                    endCellX = event.motion.x / cellSize;
+                    endCellY = event.motion.y / cellSize;
+
+                    // Update the grid based on the selection
+                    for (int i = std::min(startCellX, endCellX); i <= std::max(startCellX, endCellX); i++) 
+                    {
+                        for (int j = std::min(startCellY, endCellY); j <= std::max(startCellY, endCellY); j++) 
+                        {
+                            // Update the grid with true for the selected cells
+                            if (i >= 0 && i < numRows && j >= 0 && j < numColumns) 
+                            {
+                                grid.cells[i][j] = true;
+                            }
+                        }
+                    }
+                }
+
+                // go to next state
+                if(event.type == SDL_KEYDOWN) 
+                {
+                    currentState = PATH_PLANNING;
+                }
+            }
+            else if(currentState == PATH_PLANNING)
+            {
+                cout << "path planning!" << endl;
             }
         }
 
 
-        // Call the A* path planner
-        if (true) {
-            // Define your grid, start point, and goal point
-            Grid grid(numRows, numColumns);
-            Cell start(5, 4);
-            Cell goal(65, 70);
-
-            // Set specific cells as blocked (example)
-            grid.setCellBlocked(2, 3);
-            grid.setCellBlocked(4, 5);
-
-            // Call the path planner to find the path
-            std::vector<Cell> path = a_star.findPath(grid, start, goal);
-
-            // Your code to render the path on the grid
-        }
-
-
-
+        // ------ DRAW BACKGROUND -------------------------------
 
         // Clear the renderer with a white background
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White (R, G, B, A)
@@ -88,10 +222,39 @@ int main(int argc, char* argv[]) {
             SDL_RenderDrawLine(renderer, j * cellSize, 0, j * cellSize, numRows * cellSize);
         }
 
-        // Fill specific cells with color
+        // ------------------------------------------------------------
+
+
+        // Blocked cells
+        for (int i = 0; i < numRows; i++) 
+        {
+            for (int j = 0; j < numColumns; j++) 
+            {
+                if (grid.cells[i][j]) 
+                {
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL_Rect blockedCell = {i * cellSize, j * cellSize, cellSize, cellSize};
+                    SDL_RenderFillRect(renderer, &blockedCell);
+                }
+            }
+        }
+
+
+
+        // Current cell
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255); // Blue (R, G, B, A)
-        SDL_Rect blueCell = {4 * cellSize, 3 * cellSize, cellSize, cellSize};
-        SDL_RenderFillRect(renderer, &blueCell);
+        SDL_Rect currCell = {(curr_col-1) * cellSize, (curr_row-1) * cellSize, cellSize, cellSize};
+        SDL_RenderFillRect(renderer, &currCell);
+
+        // Start cell
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 0); // Blue (R, G, B, A)
+        SDL_Rect startCell = {(start_col-1) * cellSize, (start_row-1) * cellSize, cellSize, cellSize};
+        SDL_RenderFillRect(renderer, &startCell);
+
+        // Goal cell
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0); // Blue (R, G, B, A)
+        SDL_Rect goalCell = {(goal_col-1) * cellSize, (goal_row-1) * cellSize, cellSize, cellSize};
+        SDL_RenderFillRect(renderer, &goalCell);
 
         // Update the screen
         SDL_RenderPresent(renderer);

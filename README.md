@@ -1,5 +1,5 @@
-# grid_path_planning
-bla bla
+# path_planning
+A collection of path planning algorithms. 
 
 ## Install
 Install the Simple DirectMedia Layer (SDL) library on Linux:
@@ -26,8 +26,8 @@ Then run the executable:
 
 
 To run the project executable after building:
-cd bin
-./YourProjectName
+cd build
+./path_planning
 
 
 
