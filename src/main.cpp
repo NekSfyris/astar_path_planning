@@ -1,7 +1,4 @@
 #include <SDL.h>
-// #include <SDL_ttf.h>
-
-#include <string>
 
 #include "A_star.h"
 #include "Grid.h"
@@ -37,26 +34,6 @@ int main(int argc, char* argv[]) {
         SDL_Log("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
-
-
-    // TTF_Init();
-
-    // // Load a font
-    // TTF_Font* font = TTF_OpenFont("your_font.ttf", 24); // Use the path to your font file and font size
-
-    // // Create a function to render text
-    // void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y, SDL_Color color) {
-    //     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
-    //     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    //     SDL_Rect textRect = {x, y, textSurface->w, textSurface->h};
-    //     SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
-    //     SDL_FreeSurface(textSurface);
-    //     SDL_DestroyTexture(textTexture);
-    // }
-
-
-
-
 
 
     // grid parameters
