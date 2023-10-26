@@ -1,3 +1,0 @@
-/home/orin/Documents/path_planning/build/CMakeFiles/rebuild_cache.dir
-/home/orin/Documents/path_planning/build/CMakeFiles/edit_cache.dir
-/home/orin/Documents/path_planning/build/CMakeFiles/path_planning.dir

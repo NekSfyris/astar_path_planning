@@ -6,7 +6,13 @@ project(path_planning)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+list(APPEND CMAKE_MODULE_PATH "/usr/share/cmake/Modules")
+
+set(CMAKE_PREFIX_PATH "/usr")
+set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+
 find_package(SDL2 REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 # Source files
 file(GLOB SOURCE_FILES
@@ -21,17 +27,9 @@ file(GLOB HEADER_FILES
 # Create the executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
-# Include the 'include' directory for header files
-target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_include_directories(${PROJECT_NAME} PRIVATE include ${SDL2_INCLUDE_DIRS}  ${SDL2_TTF_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES} ${SDL2_TTF_LIBRARIES})
 
-# Find and link SDL2 (adjust if needed)
-find_package(SDL2 REQUIRED)
-target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
-
-# You can add other dependencies here if necessary
 
 # Set the output directory to the project root
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-# If you need additional configuration or settings, add them here
