@@ -7,6 +7,7 @@ CMakeFiles/path_planning.dir/src/A_star.cpp.o: ../include/Grid.h
 CMakeFiles/path_planning.dir/src/A_star.cpp.o: ../src/A_star.cpp
 
 CMakeFiles/path_planning.dir/src/Cell.cpp.o: ../include/Cell.h
+CMakeFiles/path_planning.dir/src/Cell.cpp.o: ../include/Grid.h
 CMakeFiles/path_planning.dir/src/Cell.cpp.o: ../src/Cell.cpp
 
 CMakeFiles/path_planning.dir/src/Grid.cpp.o: ../include/Grid.h

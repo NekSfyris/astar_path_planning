@@ -1,13 +1,12 @@
 #include <A_star.h>
 
 // Default constructor
-AStar::AStar() 
+AStar::AStar(Grid* grid): grid(grid)
 {
 }
 
-std::vector<Cell> AStar::findPath(const Grid& grid, const Cell& start, const Cell& goal)
+bool AStar::findPath(const Cell& start, const Cell& goal)
 {
     cout << "test" << endl;
-    std::vector<Cell> test;
-    return test;
+    return false;
 }

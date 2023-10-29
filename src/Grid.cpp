@@ -33,3 +33,13 @@ void Grid::setCellBlocked(int row, int col)
         cells[row][col] = true;
     }
 }
+
+int Grid::getNumRows() const 
+{
+    return numRows;
+}
+
+int Grid::getNumColumns() const 
+{
+    return numColumns;
+}

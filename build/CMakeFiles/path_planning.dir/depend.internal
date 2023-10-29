@@ -8,6 +8,7 @@ CMakeFiles/path_planning.dir/src/A_star.cpp.o
  /home/orin/Documents/path_planning/src/A_star.cpp
 CMakeFiles/path_planning.dir/src/Cell.cpp.o
  ../include/Cell.h
+ ../include/Grid.h
  /home/orin/Documents/path_planning/src/Cell.cpp
 CMakeFiles/path_planning.dir/src/Grid.cpp.o
  ../include/Grid.h

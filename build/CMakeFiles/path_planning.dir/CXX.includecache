@@ -17,10 +17,24 @@ vector
 -
 
 ../include/Cell.h
+cstdlib
+-
+iostream
+-
+Grid.h
+../include/Grid.h
 
 ../include/Grid.h
 vector
 -
+
+/home/orin/Documents/path_planning/src/A_star.cpp
+A_star.h
+-
+
+/home/orin/Documents/path_planning/src/Cell.cpp
+Cell.h
+/home/orin/Documents/path_planning/src/Cell.h
 
 /home/orin/Documents/path_planning/src/main.cpp
 SDL.h

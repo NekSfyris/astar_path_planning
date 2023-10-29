@@ -7,7 +7,7 @@
 
 enum State 
 {
-    CELL_SELECTION,
+    OBSTACLE_SELECTION,
     PATH_PLANNING
 };
 
@@ -55,74 +55,35 @@ int main(int argc, char* argv[]) {
     // ------ INITIALIZE PLANNER OBJECTS -------------------------------
     // Define your grid, start point, and goal point
     Grid grid(numRows, numColumns);
-    Cell start(start_row, start_col);
-    Cell goal(goal_row, goal_col);
+    Cell start(start_row, start_col, grid);
+    Cell goal(goal_row, goal_col, grid);
 
     // instance of the AStar class
-    AStar a_star;
+    AStar a_star(&grid);
 
-    // // Set specific cells as blocked (example)
-    // for(int i=10; i<20; i++)
-    // {
-    //     for(int j=5; j<10; j++)
-    //     {
-    //         grid.setCellBlocked(j, i);
-    //     }
-    // }
-    // for(int i=15; i<22; i++)
-    // {
-    //     for(int j=35; j<55; j++)
-    //     {
-    //         grid.setCellBlocked(j, i);
-    //     }
-    // }
-    // for(int i=7; i<20; i++)
-    // {
-    //     for(int j=60; j<70; j++)
-    //     {
-    //         grid.setCellBlocked(j, i);
-    //     }
-    // }
-    // for(int i=25; i<35; i++)
-    // {
-    //     for(int j=15; j<25; j++)
-    //     {
-    //         grid.setCellBlocked(j, i);
-    //     }
-    // }
+    // DEFAULT OBSTACLES
+    // Set specific cells as blocked
+    for(int i=10; i<35; i++)
+    {
+        for(int j=10; j<35; j++)
+        {
+            grid.setCellBlocked(j, i);
+        }
+    }
+    for(int i=45; i<65; i++)
+    {
+        for(int j=45; j<65; j++)
+        {
+            grid.setCellBlocked(j, i);
+        }
+    }
 
-    // for(int i=25; i<35; i++)
-    // {
-    //     for(int j=5; j<10; j++)
-    //     {
-    //         grid.setCellBlocked(j, i);
-    //     }
-    // }
-    // for(int i=30; i<45; i++)
-    // {
-    //     for(int j=35; j<45; j++)
-    //     {
-    //         grid.setCellBlocked(j, i);
-    //     }
-    // }
-    // for(int i=55; i<65; i++)
-    // {
-    //     for(int j=35; j<45; j++)
-    //     {
-    //         grid.setCellBlocked(j, i);
-    //     }
-    // }
-    // grid.setCellBlocked(2, 3);
-    // grid.setCellBlocked(4, 5);
-
-    // // Call the path planner to find the path
-    std::vector<Cell> path = a_star.findPath(grid, start, goal);
     // ------------------------------------------------------------
 
 
 
     //current state
-    State currentState = CELL_SELECTION;
+    State currentState = OBSTACLE_SELECTION;
 
 
     //param initialization
@@ -133,6 +94,7 @@ int main(int argc, char* argv[]) {
     int endCellY = -1;
     bool selecting = false;
     SDL_Event event;
+    bool pathFound = false; //true if path has been found
 
     //main event loop
     while (!quit) 
@@ -145,7 +107,7 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }
 
-            if(currentState == CELL_SELECTION)
+            if(currentState == OBSTACLE_SELECTION)
             {
                 if(event.type == SDL_MOUSEBUTTONDOWN) 
                 {
@@ -195,6 +157,16 @@ int main(int argc, char* argv[]) {
             else if(currentState == PATH_PLANNING)
             {
                 cout << "path planning!" << endl;
+
+                // if (!pathFound) {
+                //     if (astar.step()) {
+                //         // Path found
+                //         std::vector<Point> path = astar.getPath();
+                //         // Do something with the path
+                //         pathFound = true;
+                //     }
+                // }
+
             }
         }
 
