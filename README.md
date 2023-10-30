@@ -21,6 +21,14 @@ make
 ```
 
 ## Run
+### Program
+To run the project executable after building:
+```
+cd build
+./path_planning
+```
+
+### Tests
 Compile the code with C++ compiler:
 ```
 g++ -o sdl_test1 sdl_test1.cpp -I/usr/include/SDL2 -lSDL2 -lSDL2_image
@@ -31,13 +39,3 @@ Then run the executable:
 ```
 ./sdl_test1
 ```
-
-To run the project executable after building:
-```
-cd build
-./path_planning
-```
-
-
-
-
