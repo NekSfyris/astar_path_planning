@@ -21,7 +21,7 @@ make
 ```
 
 ## Run
-### Program
+### Project
 To run the project executable after building:
 ```
 cd build

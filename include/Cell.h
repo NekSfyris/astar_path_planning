@@ -12,12 +12,12 @@ using namespace std;
 class Cell {
 public:
     Cell();
-    Cell(int x, int y, const Grid& grid);
-    int getX() const;
-    int getY() const;
+    Cell(int row, int col, const Grid& grid);
+    int getRow() const;
+    int getCol() const;
 private:
-    int x;
-    int y;
+    int row;
+    int col;
 };
 
 #endif

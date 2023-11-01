@@ -1,4 +1,5 @@
 #include "Grid.h"
+#include "utils.h"
 
 // Default Constractor
 Grid::Grid() : numRows(80), numColumns(80) 
@@ -17,10 +18,11 @@ Grid::Grid(int numRows, int numColumns) : numRows(numRows), numColumns(numColumn
 bool Grid::isCellBlocked(int row, int col) const 
 {
     // Check if the provided cell is within bounds
-    if (row >= 0 && row < cells.size() && col >= 0 && col < cells[0].size()) 
+    if(isValidCell(row, col, *this)) 
     {
         return cells[row][col];
     }
+
     return true; // Consider out-of-bounds cells as blocked
 }
 
@@ -28,7 +30,7 @@ bool Grid::isCellBlocked(int row, int col) const
 void Grid::setCellBlocked(int row, int col) 
 {
     // Check if the provided cell is within bounds
-    if (row >= 0 && row < cells.size() && col >= 0 && col < cells[0].size()) 
+    if(isValidCell(row, col, *this)) 
     {
         cells[row][col] = true;
     }

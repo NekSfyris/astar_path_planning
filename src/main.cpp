@@ -87,14 +87,15 @@ int main(int argc, char* argv[]) {
 
 
     //param initialization
-    bool quit = false;
+    SDL_Event event;
     int startCellX = -1;
     int startCellY = -1;
     int endCellX = -1;
     int endCellY = -1;
-    bool selecting = false;
-    SDL_Event event;
-    bool pathFound = false; //true if path has been found
+    bool selecting = false; // flag to check if selecting multiple cells for obstacles
+    bool quit = false; // flag to quit
+    bool pathFound = false; //flag to identify is path was ound. true if path has been found
+    bool state_msg = false; //flag to give user a message based on the state
 
     //main event loop
     while (!quit) 
@@ -107,8 +108,19 @@ int main(int argc, char* argv[]) {
                 quit = true;
             }
 
+            // we always initiate the process with the OBSTACLE_SELECTION state
             if(currentState == OBSTACLE_SELECTION)
             {
+
+                // print user msg
+                if(state_msg == false)
+                {
+                    cout << "#####-----------------------------------------#####" << endl << endl;
+                    cout << "Select with your mouse more obstacles in the grid!" << endl;
+                    cout << "When you are done, press any key to do path-planning!" << endl;
+                    state_msg = true;
+                }
+
                 if(event.type == SDL_MOUSEBUTTONDOWN) 
                 {
                     //FOR SINGLE CELL
@@ -152,11 +164,19 @@ int main(int argc, char* argv[]) {
                 if(event.type == SDL_KEYDOWN) 
                 {
                     currentState = PATH_PLANNING;
+                    state_msg = false; // make it false so we print msg in next state
                 }
             }
             else if(currentState == PATH_PLANNING)
             {
-                cout << "path planning!" << endl;
+
+                // print user msg
+                if(state_msg == false)
+                {
+                    cout << "-----------" << endl << endl;
+                    cout << "path planning!" << endl;
+                    state_msg = true;
+                }
 
                 // if (!pathFound) {
                 //     if (astar.step()) {

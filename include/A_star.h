@@ -14,7 +14,7 @@ using namespace std;
 
 // Define a structure to represent nodes
 struct Node {
-    int x, y;           // Node's position
+    int row, col;           // Node's position
     int g;              // Cost from the start node to this node
     int h;              // Heuristic (estimated cost to goal)
     Node* parent;       // Parent node

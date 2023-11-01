@@ -1,34 +1,35 @@
 #include "Cell.h"
+#include "utils.h"
 
 // Default Constructor
-Cell::Cell() : x(0), y(0) 
+Cell::Cell() : row(0), col(0) 
 {
 }
 
 // Constructor
-Cell::Cell(int x, int y, const Grid& grid)
+Cell::Cell(int row, int col, const Grid& grid)
 {
     // Check if the point is within the valid range of the grid
-    if (x >= 0 && x < grid.getNumRows() && y >= 0 && y < grid.getNumColumns()) 
+    if(isValidCell(row, col, grid)) 
     {
-        this->x = x;
-        this->y = y;
+        this->row = row;
+        this->col = col;
     } 
     else 
     {
-        std::cerr << "Invalid point coordinates: (" << x << ", " << y << "). Exiting." << std::endl;
+        std::cerr << "Invalid point coordinates: (" << row << ", " << col << "). Exiting." << std::endl;
         exit(1); // Terminate
     }
 }
 
-// Get x coordinate of 2D grid
-int Cell::getX() const 
+// Get row coordinate of 2D grid
+int Cell::getRow() const 
 {
-    return x;
+    return row;
 }
 
-// Get y coordinate of 2D grid
-int Cell::getY() const 
+// Get col coordinate of 2D grid
+int Cell::getCol() const 
 {
-    return y;
+    return col;
 }
