@@ -92,10 +92,11 @@ int main(int argc, char* argv[]) {
     int startCellY = -1;
     int endCellX = -1;
     int endCellY = -1;
-    bool selecting = false; // flag to check if selecting multiple cells for obstacles
+    bool selecting = false; // flag for selecting multiple cells for obstacles
     bool quit = false; // flag to quit
     bool pathFound = false; //flag to identify is path was ound. true if path has been found
     bool state_msg = false; //flag to give user a message based on the state
+    bool init_planning = false; //flag to check if we initialized path planning. true if we initialized planning
 
     //main event loop
     while (!quit) 
@@ -178,8 +179,16 @@ int main(int argc, char* argv[]) {
                     state_msg = true;
                 }
 
-                // if (!pathFound) {
-                //     if (astar.step()) {
+                // initialize path planning if you haven't
+                if(init_planning == false)
+                {
+                    astar.initPlanning(start, goal);
+                }
+
+                // if(pathFound == false) 
+                // {
+                //     if(astar.step()) 
+                //     {
                 //         // Path found
                 //         std::vector<Point> path = astar.getPath();
                 //         // Do something with the path
