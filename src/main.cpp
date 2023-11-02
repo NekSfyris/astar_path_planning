@@ -183,6 +183,7 @@ int main(int argc, char* argv[]) {
                 if(init_planning == false)
                 {
                     astar.initPlanning(start, goal);
+                    init_planning = true;
                 }
 
                 // if(pathFound == false) 
