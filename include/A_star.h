@@ -25,8 +25,8 @@ struct Node {
 class AStar {
 public:
     AStar(Grid* grid);
-    void initPlanning(const Cell& start, const Cell& goal); // Find the path
-    bool step(); // Perform one step of the algorithm
+    void initPlanner(const Cell& start, const Cell& goal); // Find the path
+    bool step(const Cell& goal); // Perform one step of the algorithm
     std::vector<Cell> getPath() const; // Get the path when it's found
 
 private:
