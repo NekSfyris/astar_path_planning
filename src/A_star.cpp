@@ -72,16 +72,16 @@ bool AStar::step(const Cell& goal)
     }
 
 
+    // get neighbors of the current node
+    std::vector<Node> neighbor_cells = grid->getNeighborCells(currentNode);
+
+
 /////////////
 
 
-
-    // Generate and process the neighbors of the current node
-    std::vector<Node> neighbor_cells = grid->getNeighborCells(currentNode);
-
     for(const Node& neighbor : neighbor_cells) 
     {
-        // Skip neighbors that are in the closed list
+        // continue if neighbor is in the closed list
         if(std::find(closedList.begin(), closedList.end(), neighbor) != closedList.end())
         {
             continue;
@@ -120,6 +120,32 @@ bool AStar::step(const Cell& goal)
     return pathFound;
 
 }
+
+int AStar::calcCostEuclidean(const Node& current, const Node& neighbor)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = neighbor.x - current.x;
+    int dy = neighbor.y - current.y;
+    
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+int AStar::calcCostManhattan(const Node& current, const Node& neighbor)
+{
+    // Manhattan distance (sum of absolute differences in x and y)
+    int dx = std::abs(neighbor.x - current.x);
+    int dy = std::abs(neighbor.y - current.y);
+
+    int cost = dx + dy;
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+
 
 std::vector<Cell> AStar::getPath() const
 {

@@ -13,28 +13,31 @@ using namespace std;
 
 
 // Define a structure to represent nodes
-struct Node {
-    int row;            // Node's row position
-    int col;            // Node's col position
-    int g;              // Cost from the start node to this node
-    int h;              // Heuristic (estimated cost to goal)
+struct Node 
+{
+    int row;            // node's row position
+    int col;            // node's col position
+    int g;              // cost from the start node to this node
+    int h;              // heuristic (estimated cost to goal)
     int f;              // total cost = g + h
-    Node* parent;       // Parent node
+    Node* parent;       // parent node
 };
 
 class AStar {
 public:
     AStar(Grid* grid);
-    void initPlanner(const Cell& start, const Cell& goal); // Find the path
-    bool step(const Cell& goal); // Perform one step of the algorithm
-    std::vector<Cell> getPath() const; // Get the path when it's found
+    void initPlanner(const Cell& start, const Cell& goal); // initialize planner
+    bool step(const Cell& goal); // do one step of the A*
+    std::vector<Cell> getPath() const; // get the inal path if we found it
+    int calcCostEuclidean(const Node& current, const Node& neighbor); // calculate Euclidean distance/cost between two nodes
+    int calcCostManhattan(const Node& current, const Node& neighbor); // calculate Manhattan distance/cost between two nodes
 
 private:
-    Grid* grid; // Pointer to the grid containing the map
-    std::vector<Node> openList; // Nodes to be evaluated
-    std::vector<Node> closedList; // Evaluated nodes
-    std::vector<Cell> path_to_goal; // Final path
-    bool pathFound; // Flag to track path found
+    Grid* grid; // pointer to the grid containing the map
+    std::vector<Node> openList; // nodes to be evaluated
+    std::vector<Node> closedList; // evaluated nodes
+    std::vector<Cell> path_to_goal; // final path
+    bool pathFound; // flag to identify path found
 };
 
 #endif
