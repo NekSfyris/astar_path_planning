@@ -5,13 +5,14 @@
 
 class Grid {
 public:
-    Grid();
-    Grid(int numRows, int numColumns);
-    bool isCellBlocked(int row, int col) const; // Check if a cell is blocked
-    void setCellBlocked(int row, int col); // Set the status of a cell
-    std::vector<std::vector<bool>> cells; //2D grid
-    int getNumRows() const;
-    int getNumColumns() const;
+    Grid(); // default Constructor
+    Grid(int numRows, int numColumns); // Constructor
+    std::vector<Node> getNeighborCells(const Node& node) const; // get all neighbours of current node
+    bool isCellBlocked(int row, int col) const; // check if cell is blocked
+    void setCellBlocked(int row, int col); // set status of cell to blocked
+    std::vector<std::vector<bool>> cells; // 2D grid
+    int getNumRows() const; // get number of rows in 2D grid
+    int getNumColumns() const; // get number of cols in 2D grid
  
     int numRows;
     int numColumns;

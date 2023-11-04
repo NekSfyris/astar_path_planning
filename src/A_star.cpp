@@ -77,9 +77,9 @@ bool AStar::step(const Cell& goal)
 
 
     // Generate and process the neighbors of the current node
-    std::vector<Node> neighbors = grid->getNeighbors(currentNode);
+    std::vector<Node> neighbor_cells = grid->getNeighborCells(currentNode);
 
-    for(const Node& neighbor : neighbors) 
+    for(const Node& neighbor : neighbor_cells) 
     {
         // Skip neighbors that are in the closed list
         if(std::find(closedList.begin(), closedList.end(), neighbor) != closedList.end())
