@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "Grid.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -12,7 +12,7 @@ using namespace std;
 class Cell {
 public:
     Cell();
-    Cell(int row, int col, const Grid& grid);
+    Cell(int row, int col, int numRows, int numColumns);
     int getRow() const;
     int getCol() const;
 private:

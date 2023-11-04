@@ -3,12 +3,22 @@
 
 #include <vector>
 
-#include "Grid.h"
 
-
-inline bool isValidCell(int x, int y, const Grid& grid) 
+// struct for each node of 2D grid
+struct Node 
 {
-    return (x >= 0 && x < grid.getNumRows() && y >= 0 && y < grid.getNumColumns());
+    int row;            // node's row position
+    int col;            // node's col position
+    int g;              // cost from the start node to this node
+    int h;              // heuristic (estimated cost to goal)
+    int f;              // total cost = g + h
+    Node* parent;       // parent node
+};
+
+
+inline bool isValidCell(int x, int y, int numRows, int numColumns) 
+{
+    return (x >= 0 && x < numRows && y >= 0 && y < numColumns);
 }
 
 #endif

@@ -1,16 +1,16 @@
 #include <A_star.h>
-#include "utils.h"
+
 
 // Default constructor
 AStar::AStar(Grid* grid): grid(grid)
 {
 }
 
-bool AStar::initPlanner(const Cell& start, const Cell& goal)
+void AStar::initPlanner(const Cell& start, const Cell& goal)
 {
  
     // Clear any previous path and open/closed lists
-    path.clear();
+    path_to_goal.clear();
     openList.clear();
     closedList.clear();
 
@@ -19,7 +19,7 @@ bool AStar::initPlanner(const Cell& start, const Cell& goal)
     int g = 0;
     int h = grid->calcHeuristic(start, goal);
     int f = g + h;
-    Node initNode = {start.x, start.y, g, h, f, nullptr};
+    Node initNode = {start.row, start.col, g, h, f, nullptr};
     openList.push_back(initNode);
 
     cout << "Planning Initilized!" << endl;
@@ -28,6 +28,9 @@ bool AStar::initPlanner(const Cell& start, const Cell& goal)
 
 bool AStar::step(const Cell& goal)
 {
+
+    pathFound = false;
+
     // if no path found
     if(openList.empty()) 
     {
@@ -55,31 +58,29 @@ bool AStar::step(const Cell& goal)
     openList.erase(openList.begin() + minIndex);
 
     // add new node to the closed list
-    closedList.push_back(currentNode);
+    closedList.push_back(currNode);
 
     // if we reached the goal
-    if(currentNode.x == goal.x && currentNode.y == goal.y) 
+    if(currNode.row == goal.row && currNode.col == goal.col) 
     {
         // Goal reached, reconstruct the path
-        Node* node = &currentNode;
+        Node* node = &currNode;
         while(node != nullptr) 
         {
-            path_to_goal.insert(path_to_goal.begin(), Cell(node->x, node->y));
+            path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col));
             node = node->parent;
         }
+
         pathFound = true;
         return pathFound;
     }
 
 
     // get neighbors of the current node
-    std::vector<Node> neighbor_cells = grid->getNeighborCells(currentNode);
+    std::vector<Node> neighbors = grid->getNeighborCells(currNode);
 
-
-/////////////
-
-
-    for(const Node& neighbor : neighbor_cells) 
+    // find the next "lowest" cost neighbor
+    for(const Node& neighbor : neighbors) 
     {
         // continue if neighbor is in the closed list
         if(std::find(closedList.begin(), closedList.end(), neighbor) != closedList.end())
@@ -87,36 +88,36 @@ bool AStar::step(const Cell& goal)
             continue;
         }
 
-        // Calculate tentative g score
-        int tentativeG = currentNode.g + grid->calculateCost(currentNode, neighbor);
+        // compute tentative g cost
+        int g_cost = currNode.g + calcCostEuclidean(currNode, neighbor);
 
-        // Check if the neighbor is in the open list
+        // Check if neighbor is in the open list
         bool inOpenList = false;
         for(Node& openNode : openList) 
         {
-            if(openNode.x == neighbor.x && openNode.y == neighbor.y)
+            if(openNode.row == neighbor.row && openNode.col == neighbor.col)
             {
                 inOpenList = true;
-                if(tentativeG < openNode.g)
+                if(g_cost < openNode.g)
                 {
-                    openNode.g = tentativeG;
-                    openNode.parent = &currentNode;
+                    openNode.g = g_cost;
+                    openNode.parent = &currNode;
                 }
                 break;
             }
         }
 
-        // If neighbor is not in open list, add it
+        // if neighbor is not in open list, add it
         if(!inOpenList)
         {
-            neighbor.g = tentativeG;
+            neighbor.g = g_cost;
             neighbor.h = grid->calculateHeuristic(neighbor, goal);
-            neighbor.parent = &currentNode;
+            neighbor.f = neighbor.g + neighbor.h;
+            neighbor.parent = &currNode;
             openList.push_back(neighbor);
         }
     }
 
-    pathFound = false;
     return pathFound;
 
 }
@@ -124,8 +125,8 @@ bool AStar::step(const Cell& goal)
 int AStar::calcCostEuclidean(const Node& current, const Node& neighbor)
 {
     // Euclidean distance between current and neighbor node
-    int dx = neighbor.x - current.x;
-    int dy = neighbor.y - current.y;
+    int dx = neighbor.row - current.row;
+    int dy = neighbor.col - current.col;
     
     int cost = std::sqrt(dx * dx + dy * dy);
     cost *= 10; // just for simplicity in numbers
@@ -136,8 +137,8 @@ int AStar::calcCostEuclidean(const Node& current, const Node& neighbor)
 int AStar::calcCostManhattan(const Node& current, const Node& neighbor)
 {
     // Manhattan distance (sum of absolute differences in x and y)
-    int dx = std::abs(neighbor.x - current.x);
-    int dy = std::abs(neighbor.y - current.y);
+    int dx = std::abs(neighbor.row - current.row);
+    int dy = std::abs(neighbor.col - current.col);
 
     int cost = dx + dy;
     cost *= 10; // just for simplicity in numbers
@@ -149,6 +150,6 @@ int AStar::calcCostManhattan(const Node& current, const Node& neighbor)
 
 std::vector<Cell> AStar::getPath() const
 {
-
+    cout << "NOT IMPLEMENTED YET!" << endl;
 }
 

@@ -3,6 +3,7 @@
 #include "A_star.h"
 #include "Grid.h"
 #include "Cell.h"
+#include "utils.h"
 
 
 enum State 
@@ -55,8 +56,8 @@ int main(int argc, char* argv[]) {
     // ------ INITIALIZE PLANNER OBJECTS -------------------------------
     // Define your grid, start point, and goal point
     Grid grid(numRows, numColumns);
-    Cell start(start_row, start_col, grid);
-    Cell goal(goal_row, goal_col, grid);
+    Cell start(start_row, start_col, numRows, numColumns);
+    Cell goal(goal_row, goal_col, numRows, numColumns);
 
     // instance of the AStar class
     AStar a_star(&grid);
@@ -175,7 +176,7 @@ int main(int argc, char* argv[]) {
                 if(state_msg == false)
                 {
                     cout << "-----------" << endl << endl;
-                    cout << "path planning!" << endl;
+                    cout << "We initiate the path planning!" << endl;
                     state_msg = true;
                 }
 
@@ -186,16 +187,18 @@ int main(int argc, char* argv[]) {
                     init_planning = true;
                 }
 
-                // if(pathFound == false) 
-                // {
-                //     if(astar.step(goal)) 
-                //     {
-                //         // Path found
-                //         std::vector<Point> path = astar.getPath();
-                //         // Do something with the path
-                //         pathFound = true;
-                //     }
-                // }
+
+                // if the path was found
+                // PROBABLY THE RETURN OF THIS FUNCTION HAS TO BE AN INT. 0= NOT FOUND YET, 1 = FOUND, 2 = NO PATH TO GOAL
+                if(astar.step(goal)) 
+                {
+                    // Path found
+                    // std::vector<Point> path = astar.getPath();
+
+                    cout << "PATH WAS FOUND!" << endl;
+
+                }
+            
 
             }
         }

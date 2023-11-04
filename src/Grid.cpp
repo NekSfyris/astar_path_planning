@@ -1,5 +1,4 @@
 #include "Grid.h"
-#include "utils.h"
 
 
 Grid::Grid() : numRows(80), numColumns(80) 
@@ -32,7 +31,7 @@ std::vector<Node> Grid::getNeighborCells(const Node& node) const
         int newY = curr_y + movements[i][1];
 
         // if new movement is within the grid bounds and not blocked
-        if(isValidCell(newX, newY) && !isBlocked(newX, newY))
+        if(isValidCell(newX, newY, numRows, numColumns) && !isBlocked(newX, newY, numRows, numColumns))
         {
             Node neighbor = {newX, newY, 0, 0, 0, nullptr};
             neighbor_cells.push_back(neighbor);
@@ -45,7 +44,7 @@ std::vector<Node> Grid::getNeighborCells(const Node& node) const
 bool Grid::isCellBlocked(int row, int col) const 
 {
     // Check if the provided cell is within bounds
-    if(isValidCell(row, col, *this)) 
+    if(isValidCell(row, col, numRows, numColumns)) 
     {
         return cells[row][col];
     }
@@ -57,7 +56,8 @@ bool Grid::isCellBlocked(int row, int col) const
 void Grid::setCellBlocked(int row, int col) 
 {
     // Check if the provided cell is within bounds
-    if(isValidCell(row, col, *this)) 
+    // if(isValidCell(row, col, *this))
+    if(isValidCell(row, col, numRows, numColumns)) 
     {
         cells[row][col] = true;
     }

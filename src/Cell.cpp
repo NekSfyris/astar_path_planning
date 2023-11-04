@@ -1,5 +1,5 @@
 #include "Cell.h"
-#include "utils.h"
+
 
 // Default Constructor
 Cell::Cell() : row(0), col(0) 
@@ -7,10 +7,10 @@ Cell::Cell() : row(0), col(0)
 }
 
 // Constructor
-Cell::Cell(int row, int col, const Grid& grid)
+Cell::Cell(int row, int col, int numRows, int numColumns)
 {
     // Check if the point is within the valid range of the grid
-    if(isValidCell(row, col, grid)) 
+    if(isValidCell(row, col, numRows, numColumns)) 
     {
         this->row = row;
         this->col = col;

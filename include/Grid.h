@@ -3,6 +3,10 @@
 
 #include <vector>
 
+#include "Cell.h"
+#include "utils.h"
+
+
 class Grid {
 public:
     Grid(); // default Constructor
