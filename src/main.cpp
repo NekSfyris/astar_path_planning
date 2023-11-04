@@ -183,14 +183,14 @@ int main(int argc, char* argv[]) {
                 // initialize path planning if you haven't
                 if(init_planning == false)
                 {
-                    astar.initPlanner(start, goal);
+                    a_star.initPlanner(start, goal);
                     init_planning = true;
                 }
 
 
                 // if the path was found
                 // PROBABLY THE RETURN OF THIS FUNCTION HAS TO BE AN INT. 0= NOT FOUND YET, 1 = FOUND, 2 = NO PATH TO GOAL
-                if(astar.step(goal)) 
+                if(a_star.step(goal)) 
                 {
                     // Path found
                     // std::vector<Point> path = astar.getPath();

@@ -2,12 +2,12 @@
 #define ASTAR_H
 
 #include<iostream>
+#include <cmath>
+#include <vector>
 
 #include "Grid.h"
 #include "Cell.h"
 #include "utils.h"
-
-#include <vector>
 
 using namespace std;
 
@@ -29,7 +29,7 @@ public:
 
 
 private:
-    Grid* grid; // pointer to the grid containing the map
+    Grid* grid; // pointer to the 2D grid
     std::vector<Node> openList; // nodes to be evaluated
     std::vector<Node> closedList; // evaluated nodes
     std::vector<Cell> path_to_goal; // final path

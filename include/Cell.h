@@ -15,9 +15,12 @@ public:
     Cell(int row, int col, int numRows, int numColumns);
     int getRow() const;
     int getCol() const;
-private:
+
     int row;
     int col;
+
+private:
+
 };
 
 #endif

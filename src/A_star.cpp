@@ -14,12 +14,15 @@ void AStar::initPlanner(const Cell& start, const Cell& goal)
     openList.clear();
     closedList.clear();
 
+    // Cell objects to Node objects
+    Node startNode = {start.row, start.col, 0, 0, 0, nullptr};
+    Node goalNode = {goal.row, goal.col, 0, 0, 0, nullptr};
 
-    // Add the initial node to the open list
+    // add the initial node to the open list
     int g = 0;
-    int h = grid->calcHeuristic(start, goal);
+    int h = calcHeuristicEuclidean(startNode, goalNode);
     int f = g + h;
-    Node initNode = {start.row, start.col, g, h, f, nullptr};
+    Node initNode = {startNode.row, startNode.col, g, h, f, nullptr};
     openList.push_back(initNode);
 
     cout << "Planning Initilized!" << endl;
@@ -30,6 +33,9 @@ bool AStar::step(const Cell& goal)
 {
 
     pathFound = false;
+
+    // Cell objects to Node objects
+    Node goalNode = {goal.row, goal.col, 0, 0, 0, nullptr};
 
     // if no path found
     if(openList.empty()) 
@@ -67,7 +73,7 @@ bool AStar::step(const Cell& goal)
         Node* node = &currNode;
         while(node != nullptr) 
         {
-            path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col));
+            path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col, grid->getNumRows(), grid->getNumColumns()));
             node = node->parent;
         }
 
@@ -80,18 +86,29 @@ bool AStar::step(const Cell& goal)
     std::vector<Node> neighbors = grid->getNeighborCells(currNode);
 
     // find the next "lowest" cost neighbor
-    for(const Node& neighbor : neighbors) 
+    for(Node& neighbor : neighbors) 
     {
+
         // continue if neighbor is in the closed list
-        if(std::find(closedList.begin(), closedList.end(), neighbor) != closedList.end())
+        bool foundInClosedList = false;
+        for(const Node& closedNode : closedList) 
+        {
+            if (neighbor == closedNode) 
+            {
+                foundInClosedList = true;
+                break;
+            }
+        }
+        if(foundInClosedList)
         {
             continue;
         }
+            
 
-        // compute tentative g cost
+        // compute g cost
         int g_cost = currNode.g + calcCostEuclidean(currNode, neighbor);
 
-        // Check if neighbor is in the open list
+        // check if neighbor is in the open list
         bool inOpenList = false;
         for(Node& openNode : openList) 
         {
@@ -101,6 +118,8 @@ bool AStar::step(const Cell& goal)
                 if(g_cost < openNode.g)
                 {
                     openNode.g = g_cost;
+                    openNode.h = calcHeuristicEuclidean(openNode, goalNode);
+                    openNode.f = openNode.g + openNode.h;
                     openNode.parent = &currNode;
                 }
                 break;
@@ -111,7 +130,7 @@ bool AStar::step(const Cell& goal)
         if(!inOpenList)
         {
             neighbor.g = g_cost;
-            neighbor.h = grid->calculateHeuristic(neighbor, goal);
+            neighbor.h = calcHeuristicEuclidean(neighbor, goalNode);
             neighbor.f = neighbor.g + neighbor.h;
             neighbor.parent = &currNode;
             openList.push_back(neighbor);
@@ -173,8 +192,8 @@ int AStar::calcHeuristicManhattan(const Node& current, const Node& goal)
 
 
 
-std::vector<Cell> AStar::getPath() const
-{
-    cout << "NOT IMPLEMENTED YET!" << endl;
-}
+// std::vector<Cell> AStar::getPath() const
+// {
+//     cout << "NOT IMPLEMENTED YET!" << endl;
+// }
 

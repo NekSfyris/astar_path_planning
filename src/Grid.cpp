@@ -17,8 +17,8 @@ Grid::Grid(int numRows, int numColumns) : numRows(numRows), numColumns(numColumn
 std::vector<Node> Grid::getNeighborCells(const Node& node) const 
 {
     std::vector<Node> neighbor_cells;
-    const int curr_x = node.x;
-    const int curr_y = node.y;
+    const int curr_x = node.row;
+    const int curr_y = node.col;
 
     // movements from current node to neighbor ones in 2D vector. Includes (up, down, left, right, diagonals)
     const int movements[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, // up, down, left, right
@@ -31,7 +31,7 @@ std::vector<Node> Grid::getNeighborCells(const Node& node) const
         int newY = curr_y + movements[i][1];
 
         // if new movement is within the grid bounds and not blocked
-        if(isValidCell(newX, newY, numRows, numColumns) && !isBlocked(newX, newY, numRows, numColumns))
+        if(isValidCell(newX, newY, numRows, numColumns) && !isCellBlocked(newX, newY))
         {
             Node neighbor = {newX, newY, 0, 0, 0, nullptr};
             neighbor_cells.push_back(neighbor);

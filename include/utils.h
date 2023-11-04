@@ -13,6 +13,12 @@ struct Node
     int h;              // heuristic (estimated cost to goal)
     int f;              // total cost = g + h
     Node* parent;       // parent node
+
+    // Overload the equality operator
+    bool operator==(const Node& compare_node) const 
+    {
+        return (row == compare_node.row) && (col == compare_node.col);
+    }
 };
 
 
