@@ -146,6 +146,31 @@ int AStar::calcCostManhattan(const Node& current, const Node& neighbor)
     return cost;
 }
 
+int AStar::calcHeuristicEuclidean(const Node& current, const Node& goal)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = goal.row - current.row;
+    int dy = goal.col - current.col;
+    
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+int AStar::calcHeuristicManhattan(const Node& current, const Node& goal)
+{
+    // Manhattan distance (sum of absolute differences in x and y)
+    int dx = std::abs(goal.row - current.row);
+    int dy = std::abs(goal.col - current.col);
+
+    int cost = dx + dy;
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+
 
 
 std::vector<Cell> AStar::getPath() const

@@ -23,6 +23,10 @@ public:
     int calcCostEuclidean(const Node& current, const Node& neighbor); // calculate Euclidean distance/cost between two nodes
     int calcCostManhattan(const Node& current, const Node& neighbor); // calculate Manhattan distance/cost between two nodes
 
+    //the Heuristic cost typically involves distance metrics like the Manhattan distance or Euclidean distance from the current node to the goal one
+    int calcHeuristicEuclidean(const Node& current, const Node& goal); // calculate Euclidean distance/cost between two nodes
+    int calcHeuristicManhattan(const Node& current, const Node& goal); // calculate Manhattan distance/cost between two nodes
+
 
 private:
     Grid* grid; // pointer to the grid containing the map
