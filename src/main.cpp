@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
     bool init_planning = false; //flag to check if we initialized path planning. true if we initialized planning
 
     // frame rate control
-    const int FPS = 30;
+    const int FPS = 45;
     const int frameDelay = 1000 / FPS;
     Uint32 frameStart;
     int frameTime;
@@ -148,6 +148,17 @@ int main(int argc, char* argv[]) {
                     endCellX = event.button.x / cellSize;
                     endCellY = event.button.y / cellSize;
                     selecting = false;
+
+
+                    // Speciy the selected cells as blocked
+                    for(int i = startCellX; i <= endCellX; i++) 
+                    {
+                        for(int j = startCellY; j <= endCellY; j++) 
+                        {
+                            grid.setCellBlocked(j, i);
+                        }
+                    }
+
                 } 
                 else if(event.type == SDL_MOUSEMOTION && selecting) 
                 {
@@ -156,14 +167,14 @@ int main(int argc, char* argv[]) {
                     endCellY = event.motion.y / cellSize;
 
                     // Update the grid based on the selection
-                    for (int i = std::min(startCellX, endCellX); i <= std::max(startCellX, endCellX); i++) 
+                    for(int i = std::min(startCellX, endCellX); i <= std::max(startCellX, endCellX); i++) 
                     {
-                        for (int j = std::min(startCellY, endCellY); j <= std::max(startCellY, endCellY); j++) 
+                        for(int j = std::min(startCellY, endCellY); j <= std::max(startCellY, endCellY); j++) 
                         {
                             // Update the grid with true for the selected cells
                             if (i >= 0 && i < numRows && j >= 0 && j < numColumns) 
                             {
-                                grid.cells[i][j] = true;
+                                grid.cells[j][i] = true;
                             }
                         }
                     }
@@ -179,7 +190,7 @@ int main(int argc, char* argv[]) {
         }
 
 
-
+        // do the path planning. This state does not have any dependency on SDL events
         if(currentState == PATH_PLANNING)
         {
 
@@ -225,12 +236,14 @@ int main(int argc, char* argv[]) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black grid lines (R, G, B, A)
 
         // Draw horizontal grid lines
-        for (int i = 0; i <= numRows; i++) {
+        for (int i = 0; i <= numRows; i++) 
+        {
             SDL_RenderDrawLine(renderer, 0, i * cellSize, numColumns * cellSize, i * cellSize);
         }
 
         // Draw vertical grid lines
-        for (int j = 0; j <= numColumns; j++) {
+        for (int j = 0; j <= numColumns; j++) 
+        {
             SDL_RenderDrawLine(renderer, j * cellSize, 0, j * cellSize, numRows * cellSize);
         }
 
@@ -245,7 +258,7 @@ int main(int argc, char* argv[]) {
                 if (grid.cells[i][j]) 
                 {
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                    SDL_Rect blockedCell = {i * cellSize, j * cellSize, cellSize, cellSize};
+                    SDL_Rect blockedCell = {j * cellSize, i * cellSize, cellSize, cellSize};
                     SDL_RenderFillRect(renderer, &blockedCell);
                 }
             }
