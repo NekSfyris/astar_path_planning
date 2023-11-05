@@ -27,11 +27,11 @@ public:
     int calcHeuristicEuclidean(const Node& current, const Node& goal); // calculate Euclidean distance/cost between two nodes
     int calcHeuristicManhattan(const Node& current, const Node& goal); // calculate Manhattan distance/cost between two nodes
 
+    std::vector<Node> openList; // nodes to be evaluated
+    std::vector<Node> closedList; // evaluated nodes
 
 private:
     Grid* grid; // pointer to the 2D grid
-    std::vector<Node> openList; // nodes to be evaluated
-    std::vector<Node> closedList; // evaluated nodes
     std::vector<Cell> path_to_goal; // final path
     bool pathFound; // flag to identify path found
 };

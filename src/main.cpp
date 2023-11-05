@@ -49,8 +49,6 @@ int main(int argc, char* argv[]) {
     int start_col = 4;
     int goal_row = 65;
     int goal_col = 70;
-    int curr_row = start_row, curr_col = start_col;
-
 
 
     // ------ INITIALIZE PLANNER OBJECTS -------------------------------
@@ -223,7 +221,7 @@ int main(int argc, char* argv[]) {
             SDL_RenderDrawLine(renderer, j * cellSize, 0, j * cellSize, numRows * cellSize);
         }
 
-        // ------------------------------------------------------------
+        // ------ DRAW CELLS -------------------------------------
 
 
         // Blocked cells
@@ -241,21 +239,38 @@ int main(int argc, char* argv[]) {
         }
 
 
+        // Cells in openList
+        for(Node& openNode : a_star.openList) 
+        {
+            SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
+            SDL_Rect openCell = {(openNode.col-1) * cellSize, (openNode.row-1) * cellSize, cellSize, cellSize};
+            SDL_RenderFillRect(renderer, &openCell);
+        }
 
-        // Current cell
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255); // Blue (R, G, B, A)
-        SDL_Rect currCell = {(curr_col-1) * cellSize, (curr_row-1) * cellSize, cellSize, cellSize};
-        SDL_RenderFillRect(renderer, &currCell);
+
+        // Cells in closedList
+        for(Node& closedNode : a_star.closedList) 
+        {
+            SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
+            SDL_Rect closedCell = {(closedNode.col-1) * cellSize, (closedNode.row-1) * cellSize, cellSize, cellSize};
+            SDL_RenderFillRect(renderer, &closedCell);
+        }
+
+
+
+        // SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
+        // SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
 
         // Start cell
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 0); // Blue (R, G, B, A)
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 0); // Green (R, G, B, A)
         SDL_Rect startCell = {(start_col-1) * cellSize, (start_row-1) * cellSize, cellSize, cellSize};
         SDL_RenderFillRect(renderer, &startCell);
 
         // Goal cell
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0); // Blue (R, G, B, A)
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0); // Red (R, G, B, A)
         SDL_Rect goalCell = {(goal_col-1) * cellSize, (goal_row-1) * cellSize, cellSize, cellSize};
         SDL_RenderFillRect(renderer, &goalCell);
+
 
         // Update the screen
         SDL_RenderPresent(renderer);

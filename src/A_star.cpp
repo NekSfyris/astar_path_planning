@@ -57,16 +57,16 @@ bool AStar::step(const Cell& goal)
         }
     }
 
-    // get new node
+    // get new current node
     Node currNode = openList[minIndex];
 
     // remove previous node from the open list
     openList.erase(openList.begin() + minIndex);
 
-    // add new node to the closed list
+    // add current node to the closed list
     closedList.push_back(currNode);
 
-    // if we reached the goal
+    // if current node is the goal node, then we found the path
     if(currNode.row == goal.row && currNode.col == goal.col) 
     {
         // Goal reached, reconstruct the path
@@ -89,7 +89,7 @@ bool AStar::step(const Cell& goal)
     for(Node& neighbor : neighbors) 
     {
 
-        // continue if neighbor is in the closed list
+        // chck if neighbor is in the closed list
         bool foundInClosedList = false;
         for(const Node& closedNode : closedList) 
         {
@@ -99,13 +99,14 @@ bool AStar::step(const Cell& goal)
                 break;
             }
         }
+        //continue if neighbor is in the closed list
         if(foundInClosedList)
         {
             continue;
         }
             
 
-        // compute g cost
+        // compute tentative g cost
         int g_cost = currNode.g + calcCostEuclidean(currNode, neighbor);
 
         // check if neighbor is in the open list
