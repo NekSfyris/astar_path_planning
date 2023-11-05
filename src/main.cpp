@@ -97,11 +97,20 @@ int main(int argc, char* argv[]) {
     bool state_msg = false; //flag to give user a message based on the state
     bool init_planning = false; //flag to check if we initialized path planning. true if we initialized planning
 
+    // frame rate control
+    const int FPS = 30;
+    const int frameDelay = 1000 / FPS;
+    Uint32 frameStart;
+    int frameTime;
+
     //main event loop
     while (!quit) 
     {
+
+        frameStart = SDL_GetTicks();
+
         // while (SDL_PollEvent(&event)) {
-        while (SDL_PollEvent(&event) != 0) 
+        while(SDL_PollEvent(&event)) 
         {
             if(event.type == SDL_QUIT) 
             {
@@ -167,39 +176,43 @@ int main(int argc, char* argv[]) {
                     state_msg = false; // make it false so we print msg in next state
                 }
             }
-            else if(currentState == PATH_PLANNING)
+        }
+
+
+
+        if(currentState == PATH_PLANNING)
+        {
+
+            // print user msg
+            if(state_msg == false)
             {
+                cout << "-----------" << endl << endl;
+                cout << "We initiate the path planning!" << endl;
+                state_msg = true;
+            }
 
-                // print user msg
-                if(state_msg == false)
-                {
-                    cout << "-----------" << endl << endl;
-                    cout << "We initiate the path planning!" << endl;
-                    state_msg = true;
-                }
-
-                // initialize path planning if you haven't
-                if(init_planning == false)
-                {
-                    a_star.initPlanner(start, goal);
-                    init_planning = true;
-                }
+            // initialize path planning if you haven't
+            if(init_planning == false)
+            {
+                a_star.initPlanner(start, goal);
+                init_planning = true;
+            }
 
 
-                // if the path was found
-                // PROBABLY THE RETURN OF THIS FUNCTION HAS TO BE AN INT. 0= NOT FOUND YET, 1 = FOUND, 2 = NO PATH TO GOAL
-                if(a_star.step(goal)) 
-                {
-                    // Path found
-                    // std::vector<Point> path = astar.getPath();
+            // if the path was found
+            // PROBABLY THE RETURN OF THIS FUNCTION HAS TO BE AN INT. 0= NOT FOUND YET, 1 = FOUND, 2 = NO PATH TO GOAL
+            if(a_star.step(goal)) 
+            {
+                // Path found
+                // std::vector<Point> path = astar.getPath();
 
-                    cout << "PATH WAS FOUND!" << endl;
-
-                }
-            
+                cout << "PATH WAS FOUND!" << endl;
 
             }
+        
+
         }
+
 
 
         // ------ DRAW BACKGROUND -------------------------------
@@ -243,7 +256,7 @@ int main(int argc, char* argv[]) {
         for(Node& openNode : a_star.openList) 
         {
             SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
-            SDL_Rect openCell = {(openNode.col-1) * cellSize, (openNode.row-1) * cellSize, cellSize, cellSize};
+            SDL_Rect openCell = {(openNode.col) * cellSize, (openNode.row) * cellSize, cellSize, cellSize};
             SDL_RenderFillRect(renderer, &openCell);
         }
 
@@ -252,25 +265,38 @@ int main(int argc, char* argv[]) {
         for(Node& closedNode : a_star.closedList) 
         {
             SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
-            SDL_Rect closedCell = {(closedNode.col-1) * cellSize, (closedNode.row-1) * cellSize, cellSize, cellSize};
+            SDL_Rect closedCell = {(closedNode.col) * cellSize, (closedNode.row) * cellSize, cellSize, cellSize};
             SDL_RenderFillRect(renderer, &closedCell);
         }
 
 
+        // Current cell
+        if(!a_star.closedList.empty())
+        {
+            SDL_SetRenderDrawColor(renderer, 255, 186, 0, 0); // Grey (R, G, B, A)
+            SDL_Rect currentCell = {(a_star.closedList.back().col) * cellSize, (a_star.closedList.back().row) * cellSize, cellSize, cellSize};
+            SDL_RenderFillRect(renderer, &currentCell);
+        }
 
         // SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
         // SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
 
         // Start cell
         SDL_SetRenderDrawColor(renderer, 0, 255, 0, 0); // Green (R, G, B, A)
-        SDL_Rect startCell = {(start_col-1) * cellSize, (start_row-1) * cellSize, cellSize, cellSize};
+        SDL_Rect startCell = {(start_col) * cellSize, (start_row) * cellSize, cellSize, cellSize};
         SDL_RenderFillRect(renderer, &startCell);
 
         // Goal cell
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0); // Red (R, G, B, A)
-        SDL_Rect goalCell = {(goal_col-1) * cellSize, (goal_row-1) * cellSize, cellSize, cellSize};
+        SDL_Rect goalCell = {(goal_col) * cellSize, (goal_row) * cellSize, cellSize, cellSize};
         SDL_RenderFillRect(renderer, &goalCell);
 
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if(frameTime < frameDelay) 
+        {
+            SDL_Delay(frameDelay - frameTime);
+        }
 
         // Update the screen
         SDL_RenderPresent(renderer);
