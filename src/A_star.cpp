@@ -29,10 +29,8 @@ void AStar::initPlanner(const Cell& start, const Cell& goal)
 
 }
 
-bool AStar::step(const Cell& goal)
+int AStar::step(const Cell& goal)
 {
-
-    pathFound = false;
 
     // Cell objects to Node objects
     Node goalNode = {goal.row, goal.col, 0, 0, 0, nullptr};
@@ -40,7 +38,9 @@ bool AStar::step(const Cell& goal)
     // if no path found
     if(openList.empty()) 
     {
-        return true;
+        cout << "NO PATH AVAILABLE TO GOAL!" << endl;
+        pathFound = true;
+        return pathFound;
     }
 
     // last node is the "lowest" previous score node

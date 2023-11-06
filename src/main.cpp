@@ -6,12 +6,6 @@
 #include "utils.h"
 
 
-enum State 
-{
-    OBSTACLE_SELECTION,
-    PATH_PLANNING
-};
-
 
 int main(int argc, char* argv[]) {
 
@@ -82,7 +76,7 @@ int main(int argc, char* argv[]) {
 
 
     //current state
-    State currentState = OBSTACLE_SELECTION;
+    SDLState currentState = OBSTACLE_SELECTION;
 
 
     //param initialization
@@ -101,12 +95,12 @@ int main(int argc, char* argv[]) {
     const int FPS = 45;
     const int frameDelay = 1000 / FPS;
     Uint32 frameStart;
-    int frameTime;
 
     //main event loop
     while (!quit) 
     {
 
+        // initial frame time
         frameStart = SDL_GetTicks();
 
         // while (SDL_PollEvent(&event)) {
@@ -212,12 +206,13 @@ int main(int argc, char* argv[]) {
 
             // if the path was found
             // PROBABLY THE RETURN OF THIS FUNCTION HAS TO BE AN INT. 0= NOT FOUND YET, 1 = FOUND, 2 = NO PATH TO GOAL
-            if(a_star.step(goal)) 
+            int planner_code = a_star.step(goal);
+            if(planner_code != 0) 
             {
                 // Path found
                 // std::vector<Point> path = astar.getPath();
 
-                cout << "PATH WAS FOUND!" << endl;
+                cout << planner_output.find(planner_code) << endl;
 
             }
         
@@ -286,7 +281,7 @@ int main(int argc, char* argv[]) {
         // Current cell
         if(!a_star.closedList.empty())
         {
-            SDL_SetRenderDrawColor(renderer, 255, 186, 0, 0); // Grey (R, G, B, A)
+            SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0); // Grey (R, G, B, A)
             SDL_Rect currentCell = {(a_star.closedList.back().col) * cellSize, (a_star.closedList.back().row) * cellSize, cellSize, cellSize};
             SDL_RenderFillRect(renderer, &currentCell);
         }
@@ -305,7 +300,8 @@ int main(int argc, char* argv[]) {
         SDL_RenderFillRect(renderer, &goalCell);
 
 
-        frameTime = SDL_GetTicks() - frameStart;
+        // frame rate control with defined FPS
+        int frameTime = SDL_GetTicks() - frameStart;
         if(frameTime < frameDelay) 
         {
             SDL_Delay(frameDelay - frameTime);

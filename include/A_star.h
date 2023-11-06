@@ -16,7 +16,7 @@ class AStar {
 public:
     AStar(Grid* grid);
     void initPlanner(const Cell& start, const Cell& goal); // initialize planner
-    bool step(const Cell& goal); // do one step of the A*
+    int step(const Cell& goal); // do one step of the A*
     std::vector<Cell> getPath() const; // get the inal path if we found it
     
     //this cost is typically determined by factors like terrain, movement cost, or other considerations specific to the application or map
@@ -33,7 +33,6 @@ public:
 private:
     Grid* grid; // pointer to the 2D grid
     std::vector<Cell> path_to_goal; // final path
-    bool pathFound; // flag to identify path found
 };
 
 #endif

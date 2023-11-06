@@ -2,6 +2,9 @@
 #define UTILS_H
 
 #include <vector>
+#include <map>
+
+using namespace std;
 
 
 // struct for each node of 2D grid
@@ -19,6 +22,29 @@ struct Node
     {
         return (row == compare_node.row) && (col == compare_node.col);
     }
+};
+
+// states of SDL process
+enum SDLState 
+{
+    OBSTACLE_SELECTION,
+    PATH_PLANNING
+};
+
+// states of path planner output
+enum PlannerState 
+{
+    EXPLORING,
+    NO_PATH,
+    PATH_FOUND
+};
+
+
+//map of planner output states with messages
+map <PlannerState, string> planner_output = { 
+    {EXPLORING, "STILL EXPLORING MAP!"}, 
+    {NO_PATH, "NO PATH AVAILABLE TO GOAL!"}, 
+    {PATH_FOUND, "PATH WAS FOUND!"}
 };
 
 
