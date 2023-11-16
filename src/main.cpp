@@ -212,7 +212,7 @@ int main(int argc, char* argv[]) {
                 // Path found
                 // std::vector<Point> path = astar.getPath();
 
-                cout << planner_output.find(planner_code) << endl;
+                cout << "planner_output.find(planner_code)" << endl;
 
             }
         

@@ -33,6 +33,7 @@ public:
 private:
     Grid* grid; // pointer to the 2D grid
     std::vector<Cell> path_to_goal; // final path
+    bool pathFound;
 };
 
 #endif
