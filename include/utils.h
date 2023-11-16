@@ -2,7 +2,6 @@
 #define UTILS_H
 
 #include <vector>
-#include <map>
 
 using namespace std;
 
@@ -39,15 +38,7 @@ enum PlannerState
     PATH_FOUND
 };
 
-
-// //map of planner output states with messages
-// map <PlannerState, string> planner_output = { 
-//     {EXPLORING, "STILL EXPLORING MAP!"}, 
-//     {NO_PATH, "NO PATH AVAILABLE TO GOAL!"}, 
-//     {PATH_FOUND, "PATH WAS FOUND!"}
-// };
-
-
+// check i cell is inside the boundaries of the defined grid
 inline bool isValidCell(int x, int y, int numRows, int numColumns) 
 {
     return (x >= 0 && x < numRows && y >= 0 && y < numColumns);

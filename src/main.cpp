@@ -56,16 +56,16 @@ int main(int argc, char* argv[]) {
 
     // DEFAULT OBSTACLES
     // Set specific cells as blocked
-    for(int i=10; i<35; i++)
+    for(int i=15; i<25; i++)
     {
-        for(int j=10; j<35; j++)
+        for(int j=15; j<25; j++)
         {
             grid.setCellBlocked(j, i);
         }
     }
-    for(int i=45; i<65; i++)
+    for(int i=45; i<55; i++)
     {
-        for(int j=45; j<65; j++)
+        for(int j=45; j<55; j++)
         {
             grid.setCellBlocked(j, i);
         }
@@ -204,15 +204,17 @@ int main(int argc, char* argv[]) {
             }
 
 
-            // if the path was found
-            // PROBABLY THE RETURN OF THIS FUNCTION HAS TO BE AN INT. 0= NOT FOUND YET, 1 = FOUND, 2 = NO PATH TO GOAL
-            int planner_code = a_star.step(goal);
-            if(planner_code != 0) 
+            // do one step of the planner
+            PlannerState astarState = a_star.step(goal);
+
+            //finish the program if we found a path or there is no available path
+            if(astarState != EXPLORING) 
             {
                 // Path found
                 // std::vector<Point> path = astar.getPath();
 
-                cout << "planner_output.find(planner_code)" << endl;
+                cout << a_star.planner_output[astarState] << endl;
+                return 0;
 
             }
         

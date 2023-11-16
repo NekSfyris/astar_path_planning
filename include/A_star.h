@@ -3,6 +3,7 @@
 
 #include<iostream>
 #include <cmath>
+#include <map>
 #include <vector>
 
 #include "Grid.h"
@@ -16,7 +17,7 @@ class AStar {
 public:
     AStar(Grid* grid);
     void initPlanner(const Cell& start, const Cell& goal); // initialize planner
-    int step(const Cell& goal); // do one step of the A*
+    PlannerState step(const Cell& goal); // do one step of the A*
     std::vector<Cell> getPath() const; // get the inal path if we found it
     
     //this cost is typically determined by factors like terrain, movement cost, or other considerations specific to the application or map
@@ -30,10 +31,17 @@ public:
     std::vector<Node> openList; // nodes to be evaluated
     std::vector<Node> closedList; // evaluated nodes
 
+    //map of planner output states with messages
+    map <PlannerState, string> planner_output = { 
+        {EXPLORING, "STILL EXPLORING MAP!"}, 
+        {NO_PATH, "NO PATH AVAILABLE TO GOAL!"}, 
+        {PATH_FOUND, "PATH WAS FOUND!"}
+    };
+
+
 private:
     Grid* grid; // pointer to the 2D grid
     std::vector<Cell> path_to_goal; // final path
-    bool pathFound;
 };
 
 #endif
