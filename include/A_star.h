@@ -38,7 +38,7 @@ public:
     map <PlannerState, string> planner_output = {
         {INIT, "PLANNER INITIALIZED!"}, 
         {EXPLORING, "EXPLORING MAP!"}, 
-        {NO_PATH, "NO PATH AVAILABLE TO GOAL!"}, 
+        {NO_PATH, "NO PATH AVAILABLE TO GOAL! TERMINAING!"}, 
         {PATH_FOUND, "PATH WAS FOUND!"},
         {FINISH, "PATH PLANNING FINISHED! KEEP PLOTTING THE MAP!"}
     };

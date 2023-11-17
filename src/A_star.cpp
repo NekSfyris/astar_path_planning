@@ -40,6 +40,8 @@ void AStar::step(const Cell& goal)
     if(openList.empty()) 
     {
         astarState = NO_PATH;
+
+        return;
     }
 
     // last node is the "lowest" previous score node
@@ -187,12 +189,8 @@ int AStar::calcHeuristicManhattan(const Node& current, const Node& goal)
     return cost;
 }
 
-
-
-
 std::vector<Cell> AStar::getPath()
 {
-
     // Goal reached, reconstruct the path
     Node* node = &goal_node;
     while(node != nullptr) 

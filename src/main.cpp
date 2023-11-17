@@ -213,7 +213,7 @@ int main(int argc, char* argv[]) {
 
                 if(a_star.astarState == NO_PATH)
                 {
-                    return 0;
+                    a_star.astarState = FINISH;
                 }
                 else if(a_star.astarState == PATH_FOUND)
                 {
