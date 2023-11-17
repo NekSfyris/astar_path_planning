@@ -10,20 +10,20 @@
 int main(int argc, char* argv[]) {
 
 
-    // Initialize SDL
+    // initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
 
-    // Create a window
+    // create a window
     SDL_Window* window = SDL_CreateWindow("Grid Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 800, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         SDL_Log("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
 
-    // Create a renderer
+    // create a renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
         SDL_Log("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -38,7 +38,6 @@ int main(int argc, char* argv[]) {
     // cell size to fill the window
     int cellSize = 800 / numColumns;
 
-    bool init = false; // false = we haven't initialized yet, yes = we have
     int start_row = 5;
     int start_col = 4;
     int goal_row = 65;
@@ -46,7 +45,7 @@ int main(int argc, char* argv[]) {
 
 
     // ------ INITIALIZE PLANNER OBJECTS -------------------------------
-    // Define your grid, start point, and goal point
+    // define your grid, start point, and goal point
     Grid grid(numRows, numColumns);
     Cell start(start_row, start_col, numRows, numColumns);
     Cell goal(goal_row, goal_col, numRows, numColumns);
@@ -55,7 +54,7 @@ int main(int argc, char* argv[]) {
     AStar a_star(&grid);
 
     // DEFAULT OBSTACLES
-    // Set specific cells as blocked
+    // set specific cells as blocked
     for(int i=15; i<25; i++)
     {
         for(int j=15; j<25; j++)
@@ -75,11 +74,11 @@ int main(int argc, char* argv[]) {
 
 
 
-    //current state
+    // current state
     SDLState currentState = OBSTACLE_SELECTION;
 
 
-    //param initialization
+    // param initialization
     SDL_Event event;
     int startCellX = -1;
     int startCellY = -1;
@@ -87,17 +86,16 @@ int main(int argc, char* argv[]) {
     int endCellY = -1;
     bool selecting = false; // flag for selecting multiple cells for obstacles
     bool quit = false; // flag to quit
-    bool pathFound = false; //flag to identify is path was ound. true if path has been found
-    bool state_msg = false; //flag to give user a message based on the state
-    bool paint_path_to_goal = false; //flag to check if we need to paint pthe final path to goal
-    bool init_planning = false;
+    bool pathFound = false; // flag to identify is path was ound. true if path has been found
+    bool state_msg = false; // flag to give user a message based on the state
+    bool paint_path_to_goal = false; // flag to check if we need to paint pthe final path to goal
 
     // frame rate control
     const int FPS = 45;
     const int frameDelay = 1000 / FPS;
     Uint32 frameStart;
 
-    //main event loop
+    // main event loop
     while (!quit) 
     {
 
@@ -145,7 +143,7 @@ int main(int argc, char* argv[]) {
                     selecting = false;
 
 
-                    // Speciy the selected cells as blocked
+                    // speciy the selected cells as blocked
                     for(int i = startCellX; i <= endCellX; i++) 
                     {
                         for(int j = startCellY; j <= endCellY; j++) 
@@ -157,7 +155,7 @@ int main(int argc, char* argv[]) {
                 } 
                 else if(event.type == SDL_MOUSEMOTION && selecting) 
                 {
-                    // Continuously update the ending cell's coordinates
+                    // continuously update the ending cell's coordinates
                     endCellX = event.motion.x / cellSize;
                     endCellY = event.motion.y / cellSize;
 
@@ -189,13 +187,18 @@ int main(int argc, char* argv[]) {
         if(currentState == PATH_PLANNING)
         {
 
-            //action based on state of the path planner
+            // action based on state of the path planner
             if(a_star.astarState == INIT)
             {
                 cout << a_star.planner_output[a_star.astarState] << endl;
 
                 // initialize path planning
                 a_star.initPlanner(start, goal);
+            }
+            else if(a_star.astarState == FINISH)
+            {
+                // cout << a_star.planner_output[a_star.astarState] << endl;
+                continue;
             }
             else
             {
@@ -214,11 +217,12 @@ int main(int argc, char* argv[]) {
                 }
                 else if(a_star.astarState == PATH_FOUND)
                 {
-                    // Path found
+                    // path found
                     std::vector<Cell> path = a_star.getPath();
-                    return 0;
+                    
+                    // change state to the final one
+                    a_star.astarState = FINISH;
                 }
-
             }
         }
 

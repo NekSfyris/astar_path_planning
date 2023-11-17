@@ -36,7 +36,8 @@ enum PlannerState
     INIT,
     EXPLORING,
     NO_PATH,
-    PATH_FOUND
+    PATH_FOUND,
+    FINISH
 };
 
 // check i cell is inside the boundaries of the defined grid

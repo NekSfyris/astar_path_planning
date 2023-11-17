@@ -18,7 +18,7 @@ public:
     AStar(Grid* grid);
     void initPlanner(const Cell& start, const Cell& goal); // initialize planner
     void step(const Cell& goal); // do one step of the A*
-    std::vector<Cell> getPath() const; // get the inal path if we found it
+    std::vector<Cell> getPath(); // get the final path if we found it
     
     // this cost is typically determined by factors like terrain, movement cost, or other considerations specific to the application or map
     int calcCostEuclidean(const Node& current, const Node& neighbor); // calculate Euclidean distance/cost between two nodes
@@ -39,13 +39,15 @@ public:
         {INIT, "PLANNER INITIALIZED!"}, 
         {EXPLORING, "EXPLORING MAP!"}, 
         {NO_PATH, "NO PATH AVAILABLE TO GOAL!"}, 
-        {PATH_FOUND, "PATH WAS FOUND!"}
+        {PATH_FOUND, "PATH WAS FOUND!"},
+        {FINISH, "PATH PLANNING FINISHED! KEEP PLOTTING THE MAP!"}
     };
 
 
 private:
     Grid* grid; // pointer to the 2D grid
     std::vector<Cell> path_to_goal; // final path
+    Node goal_node; // node for the goal grid cell
 };
 
 #endif

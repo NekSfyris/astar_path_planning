@@ -69,12 +69,14 @@ void AStar::step(const Cell& goal)
     if(currNode.row == goal.row && currNode.col == goal.col) 
     {
         // Goal reached, reconstruct the path
-        Node* node = &currNode;
-        while(node != nullptr) 
-        {
-            path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col, grid->getNumRows(), grid->getNumColumns()));
-            node = node->parent;
-        }
+        // Node* node = &currNode;
+        // while(node != nullptr) 
+        // {
+        //     path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col, grid->getNumRows(), grid->getNumColumns()));
+        //     node = node->parent;
+        // }
+
+        goal_node = currNode; // set the goal node as the current node
 
         astarState = PATH_FOUND;
     }
@@ -188,16 +190,18 @@ int AStar::calcHeuristicManhattan(const Node& current, const Node& goal)
 
 
 
-std::vector<Cell> AStar::getPath() const
+std::vector<Cell> AStar::getPath()
 {
+
     // Goal reached, reconstruct the path
-    Node* node = &currNode;
+    Node* node = &goal_node;
     while(node != nullptr) 
     {
         path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col, grid->getNumRows(), grid->getNumColumns()));
+
         node = node->parent;
     }
 
-    return
+    return path_to_goal;
 }
 
