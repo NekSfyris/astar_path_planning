@@ -89,7 +89,8 @@ int main(int argc, char* argv[]) {
     bool quit = false; // flag to quit
     bool pathFound = false; //flag to identify is path was ound. true if path has been found
     bool state_msg = false; //flag to give user a message based on the state
-    bool init_planning = false; //flag to check if we initialized path planning. true if we initialized planning
+    bool paint_path_to_goal = false; //flag to check if we need to paint pthe final path to goal
+    bool init_planning = false;
 
     // frame rate control
     const int FPS = 45;
@@ -188,37 +189,37 @@ int main(int argc, char* argv[]) {
         if(currentState == PATH_PLANNING)
         {
 
-            // print user msg
-            if(state_msg == false)
+            //action based on state of the path planner
+            if(a_star.astarState == INIT)
             {
-                cout << "-----------" << endl << endl;
-                cout << "We initiate the path planning!" << endl;
-                state_msg = true;
-            }
+                cout << a_star.planner_output[a_star.astarState] << endl;
 
-            // initialize path planning if you haven't
-            if(init_planning == false)
-            {
+                // initialize path planning
                 a_star.initPlanner(start, goal);
-                init_planning = true;
             }
-
-
-            // do one step of the planner
-            PlannerState astarState = a_star.step(goal);
-
-            //finish the program if we found a path or there is no available path
-            if(astarState != EXPLORING) 
+            else
             {
-                // Path found
-                // std::vector<Point> path = astar.getPath();
 
-                cout << a_star.planner_output[astarState] << endl;
-                return 0;
+                // do one step of the planner
+                a_star.step(goal);
+
+                if(a_star.astarState != EXPLORING)
+                {
+                    cout << a_star.planner_output[a_star.astarState] << endl;
+                }
+
+                if(a_star.astarState == NO_PATH)
+                {
+                    return 0;
+                }
+                else if(a_star.astarState == PATH_FOUND)
+                {
+                    // Path found
+                    std::vector<Cell> path = a_star.getPath();
+                    return 0;
+                }
 
             }
-        
-
         }
 
 

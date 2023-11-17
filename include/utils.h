@@ -33,6 +33,7 @@ enum SDLState
 // states of path planner output
 enum PlannerState 
 {
+    INIT,
     EXPLORING,
     NO_PATH,
     PATH_FOUND

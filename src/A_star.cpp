@@ -25,14 +25,13 @@ void AStar::initPlanner(const Cell& start, const Cell& goal)
     Node initNode = {startNode.row, startNode.col, g, h, f, nullptr};
     openList.push_back(initNode);
 
-    cout << "Planning Initilized!" << endl;
+    // update state
+    astarState = EXPLORING;
 
 }
 
-PlannerState AStar::step(const Cell& goal)
+void AStar::step(const Cell& goal)
 {
-
-    PlannerState astarState = EXPLORING;
 
     // Cell objects to Node objects
     Node goalNode = {goal.row, goal.col, 0, 0, 0, nullptr};
@@ -41,7 +40,6 @@ PlannerState AStar::step(const Cell& goal)
     if(openList.empty()) 
     {
         astarState = NO_PATH;
-        return astarState;
     }
 
     // last node is the "lowest" previous score node
@@ -79,7 +77,6 @@ PlannerState AStar::step(const Cell& goal)
         }
 
         astarState = PATH_FOUND;
-        return astarState;
     }
 
 
@@ -114,7 +111,7 @@ PlannerState AStar::step(const Cell& goal)
         bool inOpenList = false;
         for(Node& openNode : openList) 
         {
-            if(openNode.row == neighbor.row && openNode.col == neighbor.col)
+            if(openNode == neighbor)
             {
                 inOpenList = true;
                 if(g_cost < openNode.g)
@@ -134,13 +131,10 @@ PlannerState AStar::step(const Cell& goal)
             neighbor.g = g_cost;
             neighbor.h = calcHeuristicEuclidean(neighbor, goalNode);
             neighbor.f = neighbor.g + neighbor.h;
-            neighbor.parent = &currNode;
+            // neighbor.parent = &currNode;
             openList.push_back(neighbor);
         }
     }
-
-    return astarState;
-
 }
 
 int AStar::calcCostEuclidean(const Node& current, const Node& neighbor)
@@ -194,8 +188,16 @@ int AStar::calcHeuristicManhattan(const Node& current, const Node& goal)
 
 
 
-// std::vector<Cell> AStar::getPath() const
-// {
-//     cout << "NOT IMPLEMENTED YET!" << endl;
-// }
+std::vector<Cell> AStar::getPath() const
+{
+    // Goal reached, reconstruct the path
+    Node* node = &currNode;
+    while(node != nullptr) 
+    {
+        path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col, grid->getNumRows(), grid->getNumColumns()));
+        node = node->parent;
+    }
+
+    return
+}
 
