@@ -6,8 +6,8 @@
 #include "utils.h"
 
 
-
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
 
 
     // initialize SDL
@@ -39,9 +39,9 @@ int main(int argc, char* argv[]) {
     int cellSize = 800 / numColumns;
 
     int start_row = 5;
-    int start_col = 4;
+    int start_col = 5;
     int goal_row = 65;
-    int goal_col = 70;
+    int goal_col = 65;
 
 
     // ------ INITIALIZE PLANNER OBJECTS -------------------------------
@@ -55,20 +55,20 @@ int main(int argc, char* argv[]) {
 
     // DEFAULT OBSTACLES
     // set specific cells as blocked
-    for(int i=15; i<25; i++)
-    {
-        for(int j=15; j<25; j++)
-        {
-            grid.setCellBlocked(j, i);
-        }
-    }
-    for(int i=45; i<55; i++)
-    {
-        for(int j=45; j<55; j++)
-        {
-            grid.setCellBlocked(j, i);
-        }
-    }
+    // for(int i=15; i<25; i++)
+    // {
+    //     for(int j=15; j<25; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
+    // for(int i=45; i<55; i++)
+    // {
+    //     for(int j=45; j<55; j++)
+    //     {
+    //         grid.setCellBlocked(j, i);
+    //     }
+    // }
 
     // ------------------------------------------------------------
 
@@ -86,9 +86,10 @@ int main(int argc, char* argv[]) {
     int endCellY = -1;
     bool selecting = false; // flag for selecting multiple cells for obstacles
     bool quit = false; // flag to quit
-    bool pathFound = false; // flag to identify is path was ound. true if path has been found
     bool state_msg = false; // flag to give user a message based on the state
-    bool paint_path_to_goal = false; // flag to check if we need to paint pthe final path to goal
+    bool path_found = false; // flag to check if we need to paint pthe final path to goal
+
+    std::vector<Cell> path_to_goal; // if we find a path to goal, store it here
 
     // frame rate control
     const int FPS = 45;
@@ -213,13 +214,17 @@ int main(int argc, char* argv[]) {
 
                 if(a_star.astarState == NO_PATH)
                 {
+                    // change state to the final one
                     a_star.astarState = FINISH;
                 }
                 else if(a_star.astarState == PATH_FOUND)
                 {
-                    // path found
-                    std::vector<Cell> path = a_star.getPath();
+                    // path found, store it
+                    // path_to_goal = a_star.getPath();
                     
+                    // we use this to plot the path
+                    path_found = true;
+
                     // change state to the final one
                     a_star.astarState = FINISH;
                 }
@@ -230,20 +235,20 @@ int main(int argc, char* argv[]) {
 
         // ------ DRAW BACKGROUND -------------------------------
 
-        // Clear the renderer with a white background
+        // clear the renderer with a white background
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White (R, G, B, A)
         SDL_RenderClear(renderer);
 
-        // Render the grid
+        // render the grid
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black grid lines (R, G, B, A)
 
-        // Draw horizontal grid lines
+        // draw horizontal grid lines
         for (int i = 0; i <= numRows; i++) 
         {
             SDL_RenderDrawLine(renderer, 0, i * cellSize, numColumns * cellSize, i * cellSize);
         }
 
-        // Draw vertical grid lines
+        // draw vertical grid lines
         for (int j = 0; j <= numColumns; j++) 
         {
             SDL_RenderDrawLine(renderer, j * cellSize, 0, j * cellSize, numRows * cellSize);
@@ -252,7 +257,7 @@ int main(int argc, char* argv[]) {
         // ------ DRAW CELLS -------------------------------------
 
 
-        // Blocked cells
+        // blocked cells
         for (int i = 0; i < numRows; i++) 
         {
             for (int j = 0; j < numColumns; j++) 
@@ -267,7 +272,7 @@ int main(int argc, char* argv[]) {
         }
 
 
-        // Cells in openList
+        // cells in openList
         for(Node& openNode : a_star.openList) 
         {
             SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
@@ -276,7 +281,7 @@ int main(int argc, char* argv[]) {
         }
 
 
-        // Cells in closedList
+        // cells in closedList
         for(Node& closedNode : a_star.closedList) 
         {
             SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
@@ -285,23 +290,36 @@ int main(int argc, char* argv[]) {
         }
 
 
-        // Current cell
-        if(!a_star.closedList.empty())
-        {
-            SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0); // Grey (R, G, B, A)
-            SDL_Rect currentCell = {(a_star.closedList.back().col) * cellSize, (a_star.closedList.back().row) * cellSize, cellSize, cellSize};
-            SDL_RenderFillRect(renderer, &currentCell);
-        }
+        // current cell
+        SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0); // Grey (R, G, B, A)
+        // SDL_Rect currentCell = {(a_star.currNode.col) * cellSize, (a_star.currNode.row) * cellSize, cellSize, cellSize};
+        SDL_Rect currentCell = {(a_star.currNode_ptr->col) * cellSize, (a_star.currNode_ptr->row) * cellSize, cellSize, cellSize};
+        SDL_RenderFillRect(renderer, &currentCell);
+        
 
         // SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
         // SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
 
-        // Start cell
+        // if we found path, plot it
+        if(path_found==true)
+        {
+            for(int i=0; i<path_to_goal.size(); i++)
+            {
+                cout << "drawing the path"<< endl;
+                // SDL_SetRenderDrawColor(renderer, 176, 25, 218, 0); // Purple (R, G, B, A)
+                // SDL_Rect pathCell = {(path_to_goal[i].col) * cellSize, (path_to_goal[i].row) * cellSize, cellSize, cellSize};
+                // SDL_RenderFillRect(renderer, &pathCell);    
+            }        
+        }
+
+        // cout << path_to_goal.size()<< endl;
+
+        // start cell
         SDL_SetRenderDrawColor(renderer, 0, 255, 0, 0); // Green (R, G, B, A)
         SDL_Rect startCell = {(start_col) * cellSize, (start_row) * cellSize, cellSize, cellSize};
         SDL_RenderFillRect(renderer, &startCell);
 
-        // Goal cell
+        // goal cell
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0); // Red (R, G, B, A)
         SDL_Rect goalCell = {(goal_col) * cellSize, (goal_row) * cellSize, cellSize, cellSize};
         SDL_RenderFillRect(renderer, &goalCell);
@@ -314,12 +332,12 @@ int main(int argc, char* argv[]) {
             SDL_Delay(frameDelay - frameTime);
         }
 
-        // Update the screen
+        // update the screen
         SDL_RenderPresent(renderer);
 
     }
 
-    // Cleanup and quit
+    // cleanup and quit
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

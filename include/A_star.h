@@ -28,8 +28,14 @@ public:
     int calcHeuristicEuclidean(const Node& current, const Node& goal); // calculate Euclidean distance/cost between two nodes
     int calcHeuristicManhattan(const Node& current, const Node& goal); // calculate Manhattan distance/cost between two nodes
 
+    std::vector<Node> TESTopenList; // nodes to be evaluated
     std::vector<Node> openList; // nodes to be evaluated
     std::vector<Node> closedList; // evaluated nodes
+
+    Node* TESTcurrNode;
+    Node currNode;
+    Node* currNode_ptr;
+    Node last_node;
 
     // initial state of the A* 
     PlannerState astarState = INIT;
@@ -48,6 +54,8 @@ private:
     Grid* grid; // pointer to the 2D grid
     std::vector<Cell> path_to_goal; // final path
     Node goal_node; // node for the goal grid cell
+    Node* goalNode_ptr; // node for the goal grid cell
+    int step_counter; // how many steps the planner has ran
 };
 
 #endif
