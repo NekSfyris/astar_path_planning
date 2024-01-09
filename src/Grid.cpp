@@ -14,11 +14,68 @@ Grid::Grid(int numRows, int numColumns) : numRows(numRows), numColumns(numColumn
     cells.resize(numRows, std::vector<bool>(numColumns, false));
 }
 
-std::vector<Node> Grid::getNeighborCells(const Node& node) const 
+// std::vector<Node> Grid::getNeighborCells(const Node& node) const 
+// {
+//     std::vector<Node> neighbor_cells;
+//     const int curr_x = node.row;
+//     const int curr_y = node.col;
+
+//     // movements from current node to neighbor ones in 2D vector. Includes (up, down, left, right, diagonals)
+//     const int movements[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, // up, down, left, right
+//                                  {-1, -1}, {1, -1}, {-1, 1}, {1, 1}}; // diagonals
+
+//     // for all neighbor movements
+//     for(int i = 0; i < 8; i++) 
+//     {
+//         int newX = curr_x + movements[i][0];
+//         int newY = curr_y + movements[i][1];
+
+//         // if new movement is within the grid bounds and not blocked
+//         if(isValidCell(newX, newY, numRows, numColumns) && !isCellBlocked(newX, newY))
+//         {
+//             Node neighbor = {newX, newY, 0, 0, 0, nullptr};
+//             neighbor_cells.push_back(neighbor);
+//         }
+//     }
+
+//     return neighbor_cells;
+// }
+
+// std::vector<Node> Grid::getNeighborCells(const Node* node) const 
+// {
+//     std::vector<Node> neighbor_cells;
+//     const int curr_x = node->row;
+//     const int curr_y = node->col;
+
+//     // movements from current node to neighbor ones in 2D vector. Includes (up, down, left, right, diagonals)
+//     const int movements[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, // up, down, left, right
+//                                  {-1, -1}, {1, -1}, {-1, 1}, {1, 1}}; // diagonals
+
+//     // for all neighbor movements
+//     for(int i = 0; i < 8; i++) 
+//     {
+//         int newX = curr_x + movements[i][0];
+//         int newY = curr_y + movements[i][1];
+
+//         // if new movement is within the grid bounds and not blocked
+//         if(isValidCell(newX, newY, numRows, numColumns) && !isCellBlocked(newX, newY))
+//         {
+//             // Node neighbor = {newX, newY, 0, 0, 0, nullptr};
+//             // neighbor_cells.push_back(neighbor);
+//             Node* neighbor = new Node{newX, newY, 0, 0, 0, nullptr};
+//             neighbor_cells.push_back(*neighbor);
+//         }
+//     }
+
+//     return neighbor_cells;
+// }
+
+
+std::vector<Node> Grid::getNeighborCells(std::shared_ptr<Node> node) const
 {
     std::vector<Node> neighbor_cells;
-    const int curr_x = node.row;
-    const int curr_y = node.col;
+    const int curr_x = node->row;
+    const int curr_y = node->col;
 
     // movements from current node to neighbor ones in 2D vector. Includes (up, down, left, right, diagonals)
     const int movements[8][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}, // up, down, left, right
@@ -33,13 +90,17 @@ std::vector<Node> Grid::getNeighborCells(const Node& node) const
         // if new movement is within the grid bounds and not blocked
         if(isValidCell(newX, newY, numRows, numColumns) && !isCellBlocked(newX, newY))
         {
-            Node neighbor = {newX, newY, 0, 0, 0, nullptr};
+            Node neighbor = {newX, newY, 0, 0, nullptr};
             neighbor_cells.push_back(neighbor);
+            // std::shared_ptr<Node> neighbor = std::make_shared<Node>(newX, newY, 0, 0, nullptr);
+            // neighbor_cells.push_back(neighbor);
         }
     }
 
     return neighbor_cells;
 }
+
+
 
 bool Grid::isCellBlocked(int row, int col) const 
 {

@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ struct Node
     int g;              // cost from the start node to this node
     int h;              // heuristic (estimated cost to goal)
     int f;              // total cost = g + h
-    Node* parent;       // parent node
+    std::shared_ptr<Node> parent;       // parent node
 
     // // Constructor for deep copying
     // Node(const Node& other) 
@@ -67,6 +68,11 @@ struct Node
     //     return *this;
     // }
 
+    Node(int r, int c, int costG, int costH, std::shared_ptr<Node> parentNode = nullptr)
+        : row(r), col(c), g(costG), h(costH), f(costG + costH), parent(parentNode) 
+    {}
+
+
 };
 
 // states of SDL process
@@ -91,5 +97,33 @@ inline bool isValidCell(int x, int y, int numRows, int numColumns)
 {
     return (x >= 0 && x < numRows && y >= 0 && y < numColumns);
 }
+
+// print all node attributes
+inline void printNode(std::shared_ptr<Node> node)
+{
+    if(node->parent != nullptr)
+    {
+        cout << "node row="<< node->row<<", col=" << node->col << ", parent_row=" << node->parent->row << ", parent_col="<< node->parent->col << ", g="<< node->g << ", h="<< node->h << ", f="<< node->f << endl;
+    }
+    else
+    {
+        cout << "node row="<< node->row<<", col=" << node->col << ", g="<< node->g << ", h="<< node->h << ", f="<< node->f << endl;
+    }
+}
+
+// print vector of Nodes
+inline void printVector(std::vector<std::shared_ptr<Node>> nodeVector)
+{
+    std::cout << "************************* PRINTING Vector ********************************" << std::endl;
+    for(int i=0; i<nodeVector.size(); i++)
+    {
+        std::shared_ptr<Node> node = nodeVector[i];
+
+        printNode(node);
+    }
+    std::cout << "****************************************************************" << std::endl;
+}
+
+
 
 #endif

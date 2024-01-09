@@ -18,15 +18,23 @@ void AStar::initPlanner(const Cell& start, const Cell& goal)
     step_counter = 0;
 
     // Cell objects to Node objects
-    std::shared_ptr<Node> startNode = std::make_shared<Node>(start.row, start.col, 0, 0, nullptr);
-    std::shared_ptr<Node> goalNode = std::make_shared<Node>(goal.row, goal.col, 0, 0, nullptr);
-    
+    // Node startNode = {start.row, start.col, 0, 0, 0, nullptr};
+    // Node goalNode = {goal.row, goal.col, 0, 0, 0, nullptr};
+    Node* startNode = new Node{start.row, start.col, 0, 0, 0, nullptr};
+    Node* goalNode = new Node{goal.row, goal.col, 0, 0, 0, nullptr};
+
+
     // add the initial node to the open list
     int g = 0;
     int h = calcHeuristicEuclidean(startNode, goalNode);
-    // int f = g + h;
-    std::shared_ptr<Node> initNode = std::make_shared<Node>(startNode->row, startNode->col, g, h, nullptr);
-    openList.push_back(initNode);
+    int f = g + h;
+    // Node initNode = {startNode.row, startNode.col, g, h, f, nullptr};
+    Node* initNode = new Node{startNode->row, startNode->col, g, h, f, nullptr};
+    openList.push_back(*initNode);
+
+    //TEST
+    // TESTcurrNode = new Node{startNode.row, startNode.col, 0, 0, 0, nullptr};
+    // TESTopenList.push_back(initNode);
 
     // update state
     astarState = EXPLORING;
@@ -38,8 +46,17 @@ void AStar::step(const Cell& goal)
 
     cout << "*********************************************************** Current step: " << step_counter << endl;
 
-    // Cell object to Node objects
-    std::shared_ptr<Node> goalNode = std::make_shared<Node>(goal.row, goal.col, 0, 0, nullptr);
+    // Cell objects to Node objects
+    // Node goalNode = {goal.row, goal.col, 0, 0, 0, nullptr};
+    Node* goalNode = new Node{goal.row, goal.col, 0, 0, 0, nullptr};
+
+    // TEST - if no path found
+    // if(TESTopenList.empty()) 
+    // {
+    //     astarState = NO_PATH;
+    //     cout << "TESTopenList - NO_PATH" << endl;
+    //     return;
+    // }
 
     // if no path found
     if(openList.empty()) 
@@ -50,42 +67,45 @@ void AStar::step(const Cell& goal)
     }
 
 
+
+
     // initialize "lowest score" node
-    int minCostF = openList[0]->f;
-    int minCostH = openList[0]->h;
-    int minCostG = openList[0]->g;
+    int minCostF = openList[0].f;
+    int minCostH = openList[0].h;
+    int minCostG = openList[0].g;
     int minIndex = 0;
+
 
 
     // find the next node with the lowest score (considering f, h, and g)
     for(int i = 1; i < openList.size(); i++) 
     {
         // find the node with the lowest f score
-        if(openList[i]->f < minCostF) 
+        if(openList[i].f < minCostF) 
         {
-            minCostF = openList[i]->f;
-            minCostH = openList[i]->h;
-            minCostG = openList[i]->g;
+            minCostF = openList[i].f;
+            minCostH = openList[i].h;
+            minCostG = openList[i].g;
             minIndex = i;
         }
-        else if(openList[i]->f == minCostF)
+        else if(openList[i].f == minCostF)
         {
             // in case they have the same f score, solve the tie with the h score
-            if(openList[i]->h < minCostH)
+            if(openList[i].h < minCostH)
             {
-                minCostF = openList[i]->f;
-                minCostH = openList[i]->h;
-                minCostG = openList[i]->g;
+                minCostF = openList[i].f;
+                minCostH = openList[i].h;
+                minCostG = openList[i].g;
                 minIndex = i;
             }
-            else if(openList[i]->h == minCostH)
+            else if(openList[i].h == minCostH)
             {
                 // in case they have the same f score and h score, solve the tie with the g score
-                if(openList[i]->g < minCostG)
+                if(openList[i].g < minCostG)
                 {
-                    minCostF = openList[i]->f;
-                    minCostH = openList[i]->h;
-                    minCostG = openList[i]->g;
+                    minCostF = openList[i].f;
+                    minCostH = openList[i].h;
+                    minCostG = openList[i].g;
                     minIndex = i;
                 }                
             }
@@ -94,13 +114,16 @@ void AStar::step(const Cell& goal)
 
 
 
-    currNode_ptr = openList[minIndex];
+    // Node currNode(openList[minIndex]);
 
-    //printNode(currNode_ptr);
+    currNode_ptr = &openList[minIndex];
+
+    printNode(currNode_ptr);
 
 
     // if current node is the goal node, then we found the path
     // if(currNode == goalNode)
+    // if(currNode.row == goal.row && currNode.col == goal.col) 
     if(currNode_ptr->row == goal.row && currNode_ptr->col == goal.col) 
     {
 
@@ -135,29 +158,33 @@ void AStar::step(const Cell& goal)
     // remove previous node from the open list
     openList.erase(openList.begin() + minIndex);
 
+    //TEST
+    // TESTopenList.erase(TESTopenList.begin() + minIndex);
+
     // add current node to the closed list
-    closedList.push_back(currNode_ptr);
+    // closedList.push_back(currNode);
+    closedList.push_back(*currNode_ptr);
 
 
 
     // get neighbors of the current node
+    // std::vector<Node> neighbors = grid->getNeighborCells(currNode);
     std::vector<Node> neighbors = grid->getNeighborCells(currNode_ptr);
 
     // find the next "lowest" cost neighbor
     // for(Node& neighbor : neighbors)
     for(int i=0; i < neighbors.size(); i++)
     {
-        // Node* neighbor = &neighbors[i];
-        Node neighbor = neighbors[i];
+        Node* neighbor = &neighbors[i];
 
         // if neighbor is in the closed list then skip it
         bool foundInClosedList = false;
         // for(const Node& closedNode : closedList)
         for(int j=0; j < closedList.size(); j++)
         {
-            std::shared_ptr<Node> closedNode = closedList[j];
+            Node* closedNode = &closedList[j];
             // if (neighbor == closedNode)
-            if(neighbor.row == closedNode->row && neighbor.col == closedNode->col)
+            if(neighbor->row == closedNode->row && neighbor->col == closedNode->col)
             {
                 foundInClosedList = true;
                 break;
@@ -175,19 +202,37 @@ void AStar::step(const Cell& goal)
         cout << "$$ currNode_ptr->g = " << currNode_ptr->g << ", calcCostEuclidean(currNode_ptr, neighbor)=" << calcCostEuclidean(currNode_ptr, neighbor) << endl;
         cout << "$$ tentative_g_cost = " << tentative_g_cost << endl;
 
-
         // check if neighbor is in the open list
+        // bool inOpenList = false;
+        // for(Node& openNode : openList) 
+        // {
+        //     if(openNode == neighbor)
+        //     // if(openNode.row == neighbor.row && openNode.col == neighbor.col)
+        //     {
+        //         cout << "TEST1!!!!!!!!!!"<< endl;
+        //         inOpenList = true;
+        //         if(tentative_g_cost < openNode.g)
+        //         {
+        //             openNode.g = tentative_g_cost;
+        //             openNode.h = calcHeuristicEuclidean(openNode, goalNode);
+        //             openNode.f = openNode.g + openNode.h;
+        //             openNode.parent = &currNode;
+        //             cout << "TEST111111111111111111111111111111111111111111111111!!!!!!!!!!"<< endl;
+        //             cout << "row="<< openNode.row<<", col=" << openNode.col<< ", parent_row="<<openNode.parent->row << ", parent_col="<< openNode.parent->col<< endl;
+        //         }
+        //         break;
+        //     }
+        // }
+
         bool inOpenList = false;
         // for(Node& openNode : openList) 
         for(int j=0; j < openList.size(); j++) 
         {
-            // Node* openNode = &openList[j];
-            std::shared_ptr<Node> openNode = openList[j];
-
+            Node* openNode = &openList[j];
             // if(openNode == neighbor)
-            if(openNode->row == neighbor.row && openNode->col == neighbor.col)
+            if(openNode->row == neighbor->row && openNode->col == neighbor->col)
             {
-                // cout << "NODE IS IN OPENLIST!!!!!!!!!!"<< endl;
+                cout << "TEST1!!!!!!!!!!"<< endl;
                 inOpenList = true;
                 if(tentative_g_cost < openNode->g)
                 {
@@ -195,6 +240,7 @@ void AStar::step(const Cell& goal)
                     openNode->h = calcHeuristicEuclidean(openNode, goalNode);
                     openNode->f = openNode->g + openNode->h;
                     openNode->parent = currNode_ptr;
+                    cout << "TEST111111111111111111111111111111111111111111111111!!!!!!!!!!"<< endl;
                     cout << "row="<< openNode->row<<", col=" << openNode->col<< ", parent_row="<<openNode->parent->row << ", parent_col="<< openNode->parent->col<< endl;
                 }
                 break;
@@ -204,17 +250,52 @@ void AStar::step(const Cell& goal)
         // if neighbor is not in open list, add it
         if(!inOpenList)
         {
-            std::shared_ptr<Node> tempCurrNode_ptr;
+            // cout << "TEST2!!!!!!!!!!"<< endl;
+            // neighbor->g = tentative_g_cost;
+            // neighbor->h = calcHeuristicEuclidean(neighbor, goalNode);
+            // neighbor->f = neighbor->g + neighbor->h;
+            // neighbor->parent = currNode_ptr;
+            // openList.push_back(*neighbor);
+            // cout << "NOT_IN_OPENLIST row="<< neighbor->row<<", col=" << neighbor->col<< ", parent_row="<<neighbor->parent->row << ", parent_col="<< neighbor->parent->col<< ", f_cost="<< neighbor->f<< endl;
+            Node* tempCurrNode_ptr = currNode_ptr;
             printNode(currNode_ptr);
-            tempCurrNode_ptr = std::make_shared<Node>(neighbor.row, neighbor.col, tentative_g_cost, calcHeuristicEuclidean(neighbor, goalNode), currNode_ptr);
-            openList.push_back(tempCurrNode_ptr);
+            Node* tempNode = new Node{neighbor->row, neighbor->col, tentative_g_cost, calcHeuristicEuclidean(neighbor, goalNode), neighbor->g + neighbor->h, tempCurrNode_ptr};
+            openList.push_back(*tempNode);
+            cout << "NOT_IN_OPENLIST row="<< tempNode->row<<", col=" << tempNode->col<< ", parent_row="<<tempNode->parent->row << ", parent_col="<< tempNode->parent->col<< ", f_cost="<< tempNode->f<< endl;
 
-            cout << "NOT_IN_OPENLIST row="<< tempCurrNode_ptr->row<<", col=" << tempCurrNode_ptr->col<< ", parent_row="<<tempCurrNode_ptr->parent->row << ", parent_col="<< tempCurrNode_ptr->parent->col<< ", f_cost="<< tempCurrNode_ptr->f<< endl;
         }
     }
 
+    // store the last saved node with lowest score
+    // last_node = currNode;
+    // if(last_node.parent!=nullptr)
+    // {
+    //     cout << "~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    //     cout << "~last_node~ row="<< last_node.row<<", col=" << last_node.col << ", parent_row=" << last_node.parent->row << ", parent_col="<< last_node.parent->col<< endl;
+    //     cout << "~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    // }
+    // else
+    // {
+    //     cout << "~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    //     cout << "~last_node~ row="<< last_node.row<<", col=" << last_node.col << endl;
+    //     cout << "~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    // }
+
     step_counter++;
+
 }
+
+// int AStar::calcCostEuclidean(const Node& current, const Node& neighbor)
+// {
+//     // Euclidean distance between current and neighbor node
+//     int dx = neighbor.row - current.row;
+//     int dy = neighbor.col - current.col;
+    
+//     int cost = std::sqrt(dx * dx + dy * dy);
+//     cost *= 10; // just for simplicity in numbers
+
+//     return cost;
+// }
 
 int AStar::calcCostEuclidean(const Node* current, const Node* neighbor)
 {
@@ -240,18 +321,6 @@ int AStar::calcCostEuclidean(const Node* current, const Node& neighbor)
     return cost;
 }
 
-int AStar::calcCostEuclidean(std::shared_ptr<Node> current, const Node& neighbor)
-{
-    // Euclidean distance between current and neighbor node
-    int dx = neighbor.row - current->row;
-    int dy = neighbor.col - current->col;
-    
-    int cost = std::sqrt(dx * dx + dy * dy);
-    cost *= 10; // just for simplicity in numbers
-
-    return cost;
-}
-
 int AStar::calcCostManhattan(const Node& current, const Node& neighbor)
 {
     // Manhattan distance (sum of absolute differences in x and y)
@@ -263,6 +332,18 @@ int AStar::calcCostManhattan(const Node& current, const Node& neighbor)
 
     return cost;
 }
+
+// int AStar::calcHeuristicEuclidean(const Node& current, const Node& goal)
+// {
+//     // Euclidean distance between current and neighbor node
+//     int dx = goal.row - current.row;
+//     int dy = goal.col - current.col;
+    
+//     int cost = std::sqrt(dx * dx + dy * dy);
+//     cost *= 10; // just for simplicity in numbers
+
+//     return cost;
+// }
 
 int AStar::calcHeuristicEuclidean(const Node& current, const Node* goal)
 {
@@ -288,30 +369,6 @@ int AStar::calcHeuristicEuclidean(const Node* current, const Node* goal)
     return cost;
 }
 
-int AStar::calcHeuristicEuclidean(std::shared_ptr<Node> current, std::shared_ptr<Node> goal)
-{
-    // Euclidean distance between current and neighbor node
-    int dx = goal->row - current->row;
-    int dy = goal->col - current->col;
-    
-    int cost = std::sqrt(dx * dx + dy * dy);
-    cost *= 10; // just for simplicity in numbers
-
-    return cost;
-}
-
-int AStar::calcHeuristicEuclidean(const Node& current, std::shared_ptr<Node> goal)
-{
-    // Euclidean distance between current and neighbor node
-    int dx = goal->row - current.row;
-    int dy = goal->col - current.col;
-    
-    int cost = std::sqrt(dx * dx + dy * dy);
-    cost *= 10; // just for simplicity in numbers
-
-    return cost;
-}
-
 int AStar::calcHeuristicManhattan(const Node& current, const Node& goal)
 {
     // Manhattan distance (sum of absolute differences in x and y)
@@ -329,13 +386,14 @@ std::vector<Cell> AStar::getPath()
 
     cout << "---------------------------------------------------" << endl;
     cout << "Generating path!"<< endl;
+    cout << "row="<< goal_node.row<<"col=" << goal_node.col<< "parent_row="<<goal_node.parent->row << "parent_col="<< goal_node.parent->col<< endl;
 
     // Goal reached, reconstruct the path
-    std::shared_ptr<Node> node = goalNode_ptr;
+    Node* node = &goal_node;
 
     while(node != nullptr) 
     {
-        printNode(node);
+        cout << "row="<< node->row<<", col=" << node->col<< ", parent_row="<<node->parent->row << ", parent_col="<< node->parent->col<< endl;
         path_to_goal.insert(path_to_goal.begin(), Cell(node->row, node->col, grid->getNumRows(), grid->getNumColumns()));
         node = node->parent;
     }

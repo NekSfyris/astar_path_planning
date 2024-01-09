@@ -220,7 +220,7 @@ int main(int argc, char* argv[])
                 else if(a_star.astarState == PATH_FOUND)
                 {
                     // path found, store it
-                    // path_to_goal = a_star.getPath();
+                    path_to_goal = a_star.getPath();
                     
                     // we use this to plot the path
                     path_found = true;
@@ -258,7 +258,7 @@ int main(int argc, char* argv[])
 
 
         // blocked cells
-        for (int i = 0; i < numRows; i++) 
+        for(int i = 0; i < numRows; i++) 
         {
             for (int j = 0; j < numColumns; j++) 
             {
@@ -273,29 +273,33 @@ int main(int argc, char* argv[])
 
 
         // cells in openList
-        for(Node& openNode : a_star.openList) 
+        for(int i = 0; i < a_star.openList.size(); i++) 
         {
+            std::shared_ptr<Node> openNode = a_star.openList[i];
             SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
-            SDL_Rect openCell = {(openNode.col) * cellSize, (openNode.row) * cellSize, cellSize, cellSize};
+            SDL_Rect openCell = {(openNode->col) * cellSize, (openNode->row) * cellSize, cellSize, cellSize};
             SDL_RenderFillRect(renderer, &openCell);
         }
 
 
         // cells in closedList
-        for(Node& closedNode : a_star.closedList) 
+        for(int i = 0; i < a_star.closedList.size(); i++)
         {
+            std::shared_ptr<Node> closedNode = a_star.closedList[i];
             SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
-            SDL_Rect closedCell = {(closedNode.col) * cellSize, (closedNode.row) * cellSize, cellSize, cellSize};
+            SDL_Rect closedCell = {(closedNode->col) * cellSize, (closedNode->row) * cellSize, cellSize, cellSize};
             SDL_RenderFillRect(renderer, &closedCell);
         }
 
 
         // current cell
-        SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0); // Grey (R, G, B, A)
-        // SDL_Rect currentCell = {(a_star.currNode.col) * cellSize, (a_star.currNode.row) * cellSize, cellSize, cellSize};
-        SDL_Rect currentCell = {(a_star.currNode_ptr->col) * cellSize, (a_star.currNode_ptr->row) * cellSize, cellSize, cellSize};
-        SDL_RenderFillRect(renderer, &currentCell);
-        
+        if(a_star.currNode_ptr != nullptr)
+        {
+            // cout << "CURRENT ROW="<< a_star.currNode_ptr->row <<", COL=" << a_star.currNode_ptr->col << endl;
+            SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0); // Grey (R, G, B, A)
+            SDL_Rect currentCell = {(a_star.currNode_ptr->col) * cellSize, (a_star.currNode_ptr->row) * cellSize, cellSize, cellSize};
+            SDL_RenderFillRect(renderer, &currentCell);
+        }            
 
         // SDL_SetRenderDrawColor(renderer, 192, 192, 192, 0); // Grey (R, G, B, A)
         // SDL_SetRenderDrawColor(renderer, 255, 255, 192, 0); // Yellow (R, G, B, A)
@@ -305,11 +309,11 @@ int main(int argc, char* argv[])
         {
             for(int i=0; i<path_to_goal.size(); i++)
             {
-                cout << "drawing the path"<< endl;
-                // SDL_SetRenderDrawColor(renderer, 176, 25, 218, 0); // Purple (R, G, B, A)
-                // SDL_Rect pathCell = {(path_to_goal[i].col) * cellSize, (path_to_goal[i].row) * cellSize, cellSize, cellSize};
-                // SDL_RenderFillRect(renderer, &pathCell);    
-            }        
+                // cout << "drawing the path"<< endl;
+                SDL_SetRenderDrawColor(renderer, 176, 25, 218, 0); // Purple (R, G, B, A)
+                SDL_Rect pathCell = {(path_to_goal[i].col) * cellSize, (path_to_goal[i].row) * cellSize, cellSize, cellSize};
+                SDL_RenderFillRect(renderer, &pathCell);    
+            }
         }
 
         // cout << path_to_goal.size()<< endl;
