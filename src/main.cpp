@@ -9,15 +9,17 @@
 int main(int argc, char* argv[]) 
 {
 
-
     // initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
 
+    // Define window dimensions
+    const int windowWidth = 800;
+    const int windowHeight = 800;
     // create a window
-    SDL_Window* window = SDL_CreateWindow("Grid Example", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 800, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Path Planning Grid", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         SDL_Log("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
@@ -47,8 +49,8 @@ int main(int argc, char* argv[])
     // ------ INITIALIZE PLANNER OBJECTS -------------------------------
     // define your grid, start point, and goal point
     Grid grid(numRows, numColumns);
-    Cell start(start_row, start_col, numRows, numColumns);
-    Cell goal(goal_row, goal_col, numRows, numColumns);
+    grid.startCell = Cell(start_row, start_col, numRows, numColumns);
+    grid.goalCell = Cell(goal_row, goal_col, numRows, numColumns);
 
     // instance of the AStar class
     AStar a_star(&grid);
@@ -103,7 +105,6 @@ int main(int argc, char* argv[])
         // initial frame time
         frameStart = SDL_GetTicks();
 
-        // while (SDL_PollEvent(&event)) {
         while(SDL_PollEvent(&event)) 
         {
             if(event.type == SDL_QUIT) 
@@ -194,7 +195,7 @@ int main(int argc, char* argv[])
                 cout << a_star.planner_output[a_star.astarState] << endl;
 
                 // initialize path planning
-                a_star.initPlanner(start, goal);
+                a_star.initPlanner(grid.startCell, grid.goalCell);
             }
             else if(a_star.astarState == FINISH)
             {
@@ -205,7 +206,7 @@ int main(int argc, char* argv[])
             {
 
                 // do one step of the planner
-                a_star.step(goal);
+                a_star.step(grid.goalCell);
 
                 if(a_star.astarState != EXPLORING)
                 {

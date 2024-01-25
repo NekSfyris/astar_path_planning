@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <cmath>
 
 using namespace std;
 
@@ -17,61 +18,16 @@ struct Node
     int f;              // total cost = g + h
     std::shared_ptr<Node> parent;       // parent node
 
-    // // Constructor for deep copying
-    // Node(const Node& other) 
+    // // Overload the equality operator
+    // bool operator==(const Node& compare_node) const 
     // {
-    //     row = other.row;
-    //     col = other.col;
-    //     g = other.g;
-    //     h = other.h;
-    //     f = other.f;
-
-    //     // Perform a deep copy of the parent node
-    //     if (other.parent != nullptr) 
-    //     {
-    //         parent = new Node(*other.parent); // Deep copy of the parent node
-    //     } 
-    //     else 
-    //     {
-    //         parent = nullptr;
-    //     }
+    //     return (row == compare_node.row) && (col == compare_node.col);
     // }
 
-    // Overload the equality operator
-    bool operator==(const Node& compare_node) const 
-    {
-        return (row == compare_node.row) && (col == compare_node.col);
-    }
-
-    // // Overload the assignment operator
-    // Node& operator=(const Node& node_to_copy) 
-    // {
-    //     if (this != &node_to_copy) 
-    //     {
-    //         this->row = node_to_copy.row;
-    //         this->col = node_to_copy.col;
-    //         this->g = node_to_copy.g;
-    //         this->h = node_to_copy.h;
-    //         this->f = node_to_copy.f;
-
-    //         // Perform a deep copy of the parent node
-    //         if(node_to_copy.parent != nullptr) 
-    //         {
-    //             this->parent = new Node(*node_to_copy.parent); // Perform a deep copy of the parent
-    //         } 
-    //         else 
-    //         {
-    //             this->parent = nullptr;
-    //         }
-    //     }
-
-    //     return *this;
-    // }
-
+    // default constructor
     Node(int r, int c, int costG, int costH, std::shared_ptr<Node> parentNode = nullptr)
         : row(r), col(c), g(costG), h(costH), f(costG + costH), parent(parentNode) 
     {}
-
 
 };
 
@@ -97,6 +53,123 @@ inline bool isValidCell(int x, int y, int numRows, int numColumns)
 {
     return (x >= 0 && x < numRows && y >= 0 && y < numColumns);
 }
+
+
+// For G score. 
+// This cost is typically determined by factors like terrain, movement cost, or other considerations specific to the application or map
+inline int calcCostEuclidean(std::shared_ptr<Node> current, const Node& neighbor)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = neighbor.row - current->row;
+    int dy = neighbor.col - current->col;
+    
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+inline int calcCostEuclidean(const Node& current, std::shared_ptr<Node> neighbor)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = neighbor->row - current.row;
+    int dy = neighbor->col - current.col;
+    
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+inline int calcCostEuclidean(const Node& current, const Node& neighbor)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = neighbor.row - current.row;
+    int dy = neighbor.col - current.col;
+    
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+inline int calcCostManhattan(const Node& current, const Node& neighbor)
+{
+    // Manhattan distance (sum of absolute differences in x and y)
+    int dx = std::abs(neighbor.row - current.row);
+    int dy = std::abs(neighbor.col - current.col);
+
+    int cost = dx + dy;
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+//----------------------------------------
+inline int calcCostElevationEuclidean(const Node& current, const Node& neighbor)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = neighbor.row - current.row;
+    int dy = neighbor.col - current.col;
+    int de = neighbor.elevation - current.elevation;
+    
+    int cost = std::sqrt(dx * dx + dy * dy + de * de);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+//----------------------------------------
+
+// For H score. 
+// The Heuristic cost typically involves distance metrics like the Manhattan distance or Euclidean distance from the current node to the goal one
+inline int calcHeuristicEuclidean(std::shared_ptr<Node> current, std::shared_ptr<Node> goal)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = goal->row - current->row;
+    int dy = goal->col - current->col;
+    
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+inline int calcHeuristicEuclidean(const Node& current, std::shared_ptr<Node> goal)
+{
+    // Euclidean distance between current and neighbor node
+    int dx = goal->row - current.row;
+    int dy = goal->col - current.col;
+    
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+inline int calcHeuristicEuclidean(std::shared_ptr<Node> current, const Node& goal)
+{
+    // Manhattan distance (sum of absolute differences in x and y)
+    int dx = goal.row - current->row;
+    int dy = goal.col - current->col;
+
+    int cost = std::sqrt(dx * dx + dy * dy);
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
+inline int calcHeuristicManhattan(const Node& current, const Node& goal)
+{
+    // Manhattan distance (sum of absolute differences in x and y)
+    int dx = std::abs(goal.row - current.row);
+    int dy = std::abs(goal.col - current.col);
+
+    int cost = dx + dy;
+    cost *= 10; // just for simplicity in numbers
+
+    return cost;
+}
+
 
 // print all node attributes
 inline void printNode(std::shared_ptr<Node> node)
