@@ -106,19 +106,6 @@ inline int calcCostManhattan(const Node& current, const Node& neighbor)
 }
 
 //----------------------------------------
-inline int calcCostElevationEuclidean(const Node& current, const Node& neighbor)
-{
-    // Euclidean distance between current and neighbor node
-    int dx = neighbor.row - current.row;
-    int dy = neighbor.col - current.col;
-    int de = neighbor.elevation - current.elevation;
-    
-    int cost = std::sqrt(dx * dx + dy * dy + de * de);
-    cost *= 10; // just for simplicity in numbers
-
-    return cost;
-}
-//----------------------------------------
 
 // For H score. 
 // The Heuristic cost typically involves distance metrics like the Manhattan distance or Euclidean distance from the current node to the goal one
