@@ -2,7 +2,7 @@
 A collection of path planning algorithms. 
 
 ### System Results
-![alt text](https://github.com/NekSfyris/path_planning/tree/main/results/sim_example.gif)
+![alt text](https://github.com/NekSfyris/path_planning/blob/main/results/sim_example.gif)
 
 ## Install
 Install the Simple DirectMedia Layer (SDL) library on Linux:
