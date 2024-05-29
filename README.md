@@ -1,7 +1,7 @@
 # path_planning
 A collection of path planning algorithms. 
 
-### System Results
+## System Results
 ![alt text](https://github.com/NekSfyris/path_planning/blob/main/results/sim_example.gif)
 
 ## Install
